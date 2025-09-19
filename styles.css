@@ -35,3 +35,18 @@ body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica
   .nav{display:none}
   .menu-btn{display:block}
 }
+.language-switch {
+  text-align: right;
+  margin: 10px 20px;
+  font-size: 14px;
+}
+
+.language-switch a {
+  color: #0073e6;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+.language-switch a:hover {
+  text-decoration: underline;
+}
