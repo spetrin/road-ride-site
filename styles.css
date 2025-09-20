@@ -63,10 +63,26 @@ body {
 
 /* Hero */
 .hero {
-  padding: 60px 0;
+  padding: 120px 20px;
   margin-bottom: 20px;
-  background: linear-gradient(180deg, #f6fbff 0%, #fff 100%);
+  background: url("images/hero.jpg") no-repeat center center;
+  background-size: cover;
+  color: white;
   text-align: center;
+  position: relative;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4); /* затемнение для читаемости текста */
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
 }
 
 .hero h1 {
@@ -96,7 +112,7 @@ body {
   background: #fff;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 
 /* Последние поездки */
@@ -110,7 +126,7 @@ body {
   background: #fff;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .card img {
