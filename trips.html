@@ -3,51 +3,75 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Поездки — Road & Ride</title>
+  <title>Маршруты — Road & Ride</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- Переключатель языка -->
-  <div class="language-switch">
-    <a href="trips.html">RU</a> | 
-    <a href="trips_de.html">DE</a>
+  <div class="language-switch" aria-label="Переключатель языка">
+    <span aria-current="page">RU</span> |
+    <a href="trips_de.html" lang="de">DE</a>
   </div>
 
-  <!-- Хедер с меню -->
   <header class="site-header">
     <div class="container">
       <a class="logo" href="/">Road & Ride</a>
-      <nav class="nav">
+      <nav class="nav" aria-label="Основная навигация">
         <a href="index.html">Главная</a>
-        <a href="trips.html">Поездки</a>
+        <a href="trips.html" aria-current="page">Маршруты</a>
         <a href="about.html">О нас</a>
       </nav>
-      <button class="menu-btn" aria-label="menu">☰</button>
+      <button class="menu-btn" id="menu-btn" aria-label="Открыть меню">Меню</button>
     </div>
   </header>
 
   <main class="container">
-    <h1>Маршруты</h1>
-    <ul class="trip-list">
+    <header class="section-header">
+      <div>
+        <h1>Все маршруты</h1>
+        <p>Выбирайте подходящую поездку и изучайте подробные маршруты с фото и видео.</p>
+      </div>
+      <a class="section-cta" href="about.html">Нужна консультация?</a>
+    </header>
+
+    <ul class="trip-list" aria-label="Каталог маршрутов">
       <li>
-        <h3>Альпийский уикенд</h3>
-        <p>Дистанция: 600 км за 3 дня. Уровень: лёгкий — дороги асфальтированные, маленькие перевалы.</p>
+        <div class="trip-list-text">
+          <h3>Вечерняя прогулка по Мерингу</h3>
+          <p>82 км, 2,5 часа с остановками. Идеально для лёгкого вечернего выезда с панорамами Мозеля.</p>
+        </div>
+        <a class="btn" href="trip-mehring.html">Смотреть детали</a>
       </li>
       <li>
-        <h3>Озёрный круг</h3>
-        <p>Дистанция: 420 км, много остановок у воды, рекомендуем брать палатку.</p>
+        <div class="trip-list-text">
+          <h3>Озёра и долины Айфеля</h3>
+          <p>210 км, дневная петля по вулканическим озёрам и тенистым долинам Айфеля.</p>
+        </div>
+        <a class="btn" href="trip-vulkansee.html">Смотреть детали</a>
       </li>
       <li>
-        <h3>Тихие долины</h3>
-        <p>Дистанция: 200–300 км, идеально для выходного дня с семьёй.</p>
+        <div class="trip-list-text">
+          <h3>Weekend по Мозелю</h3>
+          <p>168 км за два дня. Маршрут с ночёвкой в винном отеле и рассветными видами на террасах.</p>
+        </div>
+        <a class="btn" href="trip-mosel.html">Смотреть детали</a>
+      </li>
+      <li>
+        <div class="trip-list-text">
+          <h3>Альпийский уикенд</h3>
+          <p>600 км за три дня. Асфальтовые перевалы, смотровые площадки и уютные шале.</p>
+        </div>
+        <a class="btn btn-outline" href="#">Скоро подробнее</a>
       </li>
     </ul>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>© <span id="year3"></span> Road & Ride</p>
+      <p>© <span id="year"></span> Road & Ride. Все права защищены.</p>
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <a href="about.html">Контакты</a>
+        <a href="#">Политика конфиденциальности</a>
+      </nav>
     </div>
   </footer>
 

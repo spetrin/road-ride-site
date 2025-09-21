@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Road & Ride — Weekend по Мозелю</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="trip-detail">
+  <div class="language-switch" aria-label="Переключатель языка">
+    <span aria-current="page">RU</span> |
+    <a href="trip-mosel_de.html" lang="de">DE</a>
+  </div>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="/">Road & Ride</a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="index.html">Главная</a>
+        <a href="trips.html">Маршруты</a>
+        <a href="about.html">О нас</a>
+      </nav>
+      <a class="btn btn-outline" href="trips.html">Назад к списку</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="trip-hero" aria-labelledby="trip-title">
+      <div class="container">
+        <p class="trip-badge">Последние поездки</p>
+        <h1 id="trip-title">Weekend по Мозелю</h1>
+        <p class="trip-summary">Идеальный побег из города: две дня вдоль реки с ночёвкой в винном отеле и утренними ракурсами на террасах.</p>
+        <ul class="trip-meta">
+          <li><strong>Дистанция:</strong> 168 км</li>
+          <li><strong>Продолжительность:</strong> 2 дня</li>
+          <li><strong>Сложность:</strong> Новички</li>
+        </ul>
+      </div>
+      <figure class="trip-hero-media">
+        <img src="images/Mosel.jpg" alt="Петля реки Мозель с мостом и городом на берегу">
+      </figure>
+    </section>
+
+    <section class="container trip-content">
+      <div class="trip-highlights">
+        <h2>Что вас ждёт</h2>
+        <ul>
+          <li>Много остановок для фото и дегустаций в Bernkastel-Kues.</li>
+          <li>Утренняя вылазка на смотровую площадку Piesporter Goldtröpfchen.</li>
+          <li>Неспешные прогоны вдоль B53 и уютные паромы через Мозель.</li>
+        </ul>
+      </div>
+
+      <div class="trip-itinerary">
+        <h2>Маршрут</h2>
+        <ol>
+          <li><strong>День 1: Trier → Bernkastel-Kues</strong> — тур по старому городу, ужин в Weinstube.</li>
+          <li><strong>День 2 утро</strong> — рассвет на смотровой площадке, спуск к реке.</li>
+          <li><strong>День 2 день</strong> — обратный путь через Kröv и Zell с остановкой на пароме.</li>
+          <li><strong>Финиш: Trier</strong> — сдаём технику, делимся фото.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="media-block" aria-labelledby="media-heading">
+      <div class="container">
+        <h2 id="media-heading">Фото и видео</h2>
+        <p>Подборка снимков и короткий ролик передают атмосферу уикенда.</p>
+        <div class="media-grid">
+          <figure>
+            <img src="images/Mosel.jpg" alt="Серпантин вдоль реки Мозель">
+            <figcaption>Классический «S»-поворот в центре маршрута.</figcaption>
+          </figure>
+          <figure>
+            <img src="images/mehring.jpg" alt="Вид на виноградники при закате">
+            <figcaption>Закатные оттенки над террасами в Bernkastel-Kues.</figcaption>
+          </figure>
+          <figure class="media-video">
+            <video controls poster="images/Mosel.jpg">
+              <source src="videos/trip-mosel-weekend.mp4" type="video/mp4">
+              Ваш браузер не поддерживает воспроизведение видео.
+            </video>
+            <figcaption>60 секунд самых красивых поворотов (замените на свой ролик).</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="container trip-cta">
+      <h2>Присоединяйтесь</h2>
+      <p>Заполните форму, и мы отправим доступ к закрытой группе с датами и деталями следующего выезда.</p>
+      <a class="btn" href="about.html">Оставить заявку</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Road & Ride. Все права защищены.</p>
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <a href="about.html">Контакты</a>
+        <a href="#">Политика конфиденциальности</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

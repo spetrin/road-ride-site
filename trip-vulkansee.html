@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Road & Ride — Озёра и долины Айфеля</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="trip-detail">
+  <div class="language-switch" aria-label="Переключатель языка">
+    <span aria-current="page">RU</span> |
+    <a href="trip-vulkansee_de.html" lang="de">DE</a>
+  </div>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="/">Road & Ride</a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="index.html">Главная</a>
+        <a href="trips.html">Маршруты</a>
+        <a href="about.html">О нас</a>
+      </nav>
+      <a class="btn btn-outline" href="trips.html">Назад к списку</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="trip-hero" aria-labelledby="trip-title">
+      <div class="container">
+        <p class="trip-badge">Последние поездки</p>
+        <h1 id="trip-title">Озёра и долины Айфеля</h1>
+        <p class="trip-summary">Дневная петля по вулканическим озёрам и тенистым долинам Айфеля. Отличный вариант для размеренного отдыха в компании.</p>
+        <ul class="trip-meta">
+          <li><strong>Дистанция:</strong> 210 км</li>
+          <li><strong>Продолжительность:</strong> 6 часов с остановками</li>
+          <li><strong>Сложность:</strong> Средний уровень</li>
+        </ul>
+      </div>
+      <figure class="trip-hero-media">
+        <img src="images/vulkansee.jpg" alt="Вулканическое озеро в Айфеле с зеркальной гладью">
+      </figure>
+    </section>
+
+    <section class="container trip-content">
+      <div class="trip-highlights">
+        <h2>Что вас ждёт</h2>
+        <ul>
+          <li>Катание вдоль озёр Laacher See и Schalkenmehrener Maar.</li>
+          <li>Высотные виды с Nürburg и панорамных площадок B257.</li>
+          <li>Обед в семейной пивоварне с видом на долину.</li>
+        </ul>
+      </div>
+
+      <div class="trip-itinerary">
+        <h2>Маршрут</h2>
+        <ol>
+          <li><strong>Старт: Koblenz</strong> — сбор, проверка техники, выезд по B9.</li>
+          <li><strong>Laacher See</strong> — круг вокруг озера, остановка у монастыря Maria Laach.</li>
+          <li><strong>Nürburg</strong> — короткий трек-драйв по прилегающим дорогам Nürburgring.</li>
+          <li><strong>VulkaMaar Route</strong> — вдоль озёр Schalkenmehrener и Meerfelder Maar.</li>
+          <li><strong>Финиш: Gerolstein</strong> — закрываем день кофе и десертом.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="media-block" aria-labelledby="media-heading">
+      <div class="container">
+        <h2 id="media-heading">Фото и видео</h2>
+        <p>Важно не забыть экшн-камеру — маршруты Айфеля впечатляют сменой пейзажей.</p>
+        <div class="media-grid">
+          <figure>
+            <img src="images/VulkanEifelSee.jpg" alt="Вид на озеро Лаахер-Зе с высоты" >
+            <figcaption>Утренний туман над Laacher See.</figcaption>
+          </figure>
+          <figure>
+            <img src="images/vulkansee.jpg" alt="Мотоциклы у берега озера">
+            <figcaption>Пикник на берегу Schalkenmehrener Maar.</figcaption>
+          </figure>
+          <figure class="media-video">
+            <video controls poster="images/vulkansee.jpg">
+              <source src="videos/trip-vulkansee-recap.mp4" type="video/mp4">
+              Ваш браузер не поддерживает воспроизведение видео.
+            </video>
+            <figcaption>Таймлапс поездки: 60 секунд динамики (замените на свой ролик).</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="container trip-cta">
+      <h2>Готовы к старту?</h2>
+      <p>Заполните форму — отправим трек, список остановок и чек-лист подготовки.</p>
+      <a class="btn" href="about.html">Забронировать место</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Road & Ride. Все права защищены.</p>
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <a href="about.html">Контакты</a>
+        <a href="#">Политика конфиденциальности</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

@@ -3,51 +3,75 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Routen — Road & Ride</title>
+  <title>Touren — Road & Ride</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- Переключатель языка -->
-  <div class="language-switch">
-    <a href="trips.html">RU</a> | 
-    <a href="trips_de.html">DE</a>
+  <div class="language-switch" aria-label="Sprachauswahl">
+    <a href="trips.html" lang="ru">RU</a> |
+    <span aria-current="page">DE</span>
   </div>
 
-  <!-- Хедер с меню -->
   <header class="site-header">
     <div class="container">
       <a class="logo" href="/">Road & Ride</a>
-      <nav class="nav">
+      <nav class="nav" aria-label="Hauptnavigation">
         <a href="index_de.html">Startseite</a>
-        <a href="trips_de.html">Reisen</a>
+        <a href="trips_de.html" aria-current="page">Reisen</a>
         <a href="about_de.html">Über uns</a>
       </nav>
-      <button class="menu-btn" aria-label="menu">☰</button>
+      <button class="menu-btn" id="menu-btn" aria-label="Menü öffnen">Menü</button>
     </div>
   </header>
 
   <main class="container">
-    <h1>Routen</h1>
-    <ul class="trip-list">
+    <header class="section-header">
+      <div>
+        <h1>Alle Touren</h1>
+        <p>Finden Sie die passende Fahrt und öffnen Sie die Detailseiten mit Fotos, Karten und Videos.</p>
+      </div>
+      <a class="section-cta" href="about_de.html">Beratung gewünscht?</a>
+    </header>
+
+    <ul class="trip-list" aria-label="Tourenkatalog">
       <li>
-        <h3>Alpen-Wochenende</h3>
-        <p>Distanz: 600 km in 3 Tagen. Niveau: leicht — asphaltierte Straßen, kleine Pässe.</p>
+        <div class="trip-list-text">
+          <h3>Abendrunde in Mehring</h3>
+          <p>82 km, 2,5 Stunden inkl. Stopps. Perfekt für einen leichten Mosel-Afterwork-Run.</p>
+        </div>
+        <a class="btn" href="trip-mehring_de.html">Details ansehen</a>
       </li>
       <li>
-        <h3>Seenrunde</h3>
-        <p>Distanz: 420 km, viele Stopps am Wasser, Zeltmitnahme empfohlen.</p>
+        <div class="trip-list-text">
+          <h3>Seen und Täler der Eifel</h3>
+          <p>210 km, Tagestour über Vulkanseen, Waldschluchten und kurvige Panoramen.</p>
+        </div>
+        <a class="btn" href="trip-vulkansee_de.html">Details ansehen</a>
       </li>
       <li>
-        <h3>Stille Täler</h3>
-        <p>Distanz: 200–300 km, ideal für ein Familienwochenende.</p>
+        <div class="trip-list-text">
+          <h3>Mosel-Wochenende</h3>
+          <p>168 km verteilt auf zwei Tage mit Weinverkostung und Sonnenaufgang auf den Terrassen.</p>
+        </div>
+        <a class="btn" href="trip-mosel_de.html">Details ansehen</a>
+      </li>
+      <li>
+        <div class="trip-list-text">
+          <h3>Alpen-Wochenende</h3>
+          <p>600 km in drei Tagen. Asphaltpässe, Aussichtspunkte und gemütliche Berghotels.</p>
+        </div>
+        <a class="btn btn-outline" href="#">Bald verfügbar</a>
       </li>
     </ul>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>© <span id="year3"></span> Road & Ride</p>
+      <p>© <span id="year"></span> Road & Ride. Alle Rechte vorbehalten.</p>
+      <nav class="footer-nav" aria-label="Fußnavigation">
+        <a href="about_de.html">Kontakt</a>
+        <a href="#">Datenschutzerklärung</a>
+      </nav>
     </div>
   </footer>
 

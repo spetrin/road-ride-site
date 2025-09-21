@@ -3,93 +3,99 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Road & Ride — Поездки на мото</title>
+  <title>Road & Ride — мотопутешествия</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- Переключатель языка -->
-  <div class="language-switch">
-    <a href="index.html">RU</a>  | 
-    <a href="index_de.html">DE</a>
+  <div class="language-switch" aria-label="Переключатель языка">
+    <span aria-current="page">RU</span> |
+    <a href="index_de.html" lang="de">DE</a>
   </div>
 
-  <!-- Шапка -->
   <header class="site-header">
     <div class="container">
       <a class="logo" href="/">Road & Ride</a>
-
-      <!-- Навигация -->
-      <nav class="nav" id="main-nav">
-        <a href="index.html">Главная</a>
-        <a href="trips.html">Поездки</a>
+      <nav class="nav" id="main-nav" aria-label="Основная навигация">
+        <a href="index.html" aria-current="page">Главная</a>
+        <a href="trips.html">Маршруты</a>
         <a href="about.html">О нас</a>
       </nav>
-
-      <!-- Кнопка меню -->
-      <button class="menu-btn" id="menu-btn" aria-label="menu">☰</button>
+      <button class="menu-btn" id="menu-btn" aria-label="Открыть меню">Меню</button>
     </div>
   </header>
 
-  <!-- Основной контент -->
   <main>
     <section class="hero">
       <div class="container">
-        <h1>Садись и поехали!</h1>
-        <p>Наслаждаемся путешествием</p>
-        <a class="btn" href="trips.html">Смотреть маршруты</a>
+        <h1>Седлай байк и поехали!</h1>
+        <p>Мы прокладываем маршруты, которыми хочется делиться.</p>
+        <div class="hero-actions">
+          <a class="btn" href="trips.html">Смотреть маршруты</a>
+          <a class="btn btn-outline" href="about.html">Связаться с нами</a>
+        </div>
       </div>
     </section>
 
     <section class="features container">
       <article>
-        <h3>Проверенные маршруты</h3>
-        <p>Короткие и длинные маршруты по живописным дорогам и удобными остановками.</p>
+        <h3>Проверенные дороги</h3>
+        <p>Короткие и протяжённые маршруты по живописным трассам с удобными остановками и сервисами.</p>
       </article>
       <article>
-        <h3>Поделиться впечатлениями</h3>
-        <p>Добавляйте фото и заметки о поездках — создадим библиотеку вдохновения.</p>
+        <h3>Обмен опытом</h3>
+        <p>Добавляйте заметки, фото и советы — создаём библиотеку вдохновения для всех мотолюбителей.</p>
       </article>
       <article>
-        <h3>Планирование</h3>
-        <p>Пакеты маршрутов с картой, рекомендациями и точками интереса.</p>
+        <h3>Готовые планы</h3>
+        <p>Получайте пакеты с картами, рекомендациями и списком достопримечательностей на каждый день.</p>
       </article>
     </section>
 
-    <section class="latest container">
-      <h2>Последние поездки</h2>
-      <div class="cards">
-        <div class="card">
-          <img src="images/mehring.jpg" alt="Mehring" width="600" height="350"> 
-          <h4>Вечерняя прогулка</h4>
-          <p>Лёгкий маршрут с красивыми видами.</p>
-        </div>
-        <div class="card">
-          <img src="images/vulkansee.jpg" alt="Озеро" width="600" height="350">
-          <h4>Озёра и долины</h4>
-          <p>Комфортная поездка для неспешного отдыха у воды.</p>
-        </div>
-        <div class="card">
-          <img src="images/Mosel.jpg" alt="Mosel" width="600" height="350">
-          <h4>Мозель</h4>
-          <p>Короткий маршрут выходного дня.</p>
-        </div>
+    <section class="latest container" aria-labelledby="latest-trips-heading">
+      <div class="section-header">
+        <h2 id="latest-trips-heading">Последние поездки</h2>
+        <a class="section-cta" href="trips.html">Смотреть все</a>
       </div>
+      <div class="cards">
+        <article class="card">
+          <img src="images/mehring.jpg" alt="Солнечный вид на Меринг" width="600" height="350">
+          <h4><a href="trip-mehring.html">Вечерняя прогулка по Мерингу</a></h4>
+          <p>Неспешная дорога вдоль Мозеля с панорамами виноградников.</p>
+        </article>
+        <article class="card">
+          <img src="images/vulkansee.jpg" alt="Маршрут вокруг вулканического озера" width="600" height="350">
+          <h4><a href="trip-vulkansee.html">Озёра и долины Айфеля</a></h4>
+          <p>Комфортное путешествие по водным маршрутам и видовым перевалам.</p>
+        </article>
+        <article class="card">
+          <img src="images/Mosel.jpg" alt="Эстакады вдоль реки Мозель" width="600" height="350">
+          <h4><a href="trip-mosel.html">Weekend по Мозелю</a></h4>
+          <p>Короткий маршрут выходного дня для тех, кто хочет вырваться из рутины.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="signup container" aria-labelledby="signup-heading">
+      <h2 id="signup-heading">Получайте свежие маршруты</h2>
+      <p>Подпишитесь на рассылку с новыми поездками, чек-листами подготовки и подборками экипировки.</p>
+      <form class="signup-form">
+        <label for="signup-email" class="visually-hidden">Введите e-mail</label>
+        <input type="email" id="signup-email" name="email" placeholder="you@example.com" required>
+        <button type="submit" class="btn">Подписаться</button>
+      </form>
     </section>
   </main>
 
-  <!-- Подвал -->
   <footer class="site-footer">
     <div class="container">
-      <p>© <span id="year"></span> Road & Ride — Все права защищены</p>
-      <nav class="footer-nav">
+      <p>© <span id="year"></span> Road & Ride. Все права защищены.</p>
+      <nav class="footer-nav" aria-label="Навигация в подвале">
         <a href="about.html">Контакты</a>
         <a href="#">Политика конфиденциальности</a>
       </nav>
     </div>
   </footer>
 
-  <!-- Скрипт -->
   <script src="script.js"></script>
 </body>
 </html>

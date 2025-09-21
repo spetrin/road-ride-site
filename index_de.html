@@ -3,93 +3,99 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Road & Ride — Motorradreisen</title>
+  <title>Road & Ride – Motorradreisen</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- Sprachumschalter -->
-  <div class="language-switch">
-    <a href="index.html">RU</a> | 
-    <a href="index_de.html">DE</a>
+  <div class="language-switch" aria-label="Sprachauswahl">
+    <a href="index.html" lang="ru">RU</a> |
+    <span aria-current="page">DE</span>
   </div>
 
-  <!-- Kopfbereich -->
   <header class="site-header">
     <div class="container">
       <a class="logo" href="/">Road & Ride</a>
-
-      <!-- Navigation -->
-      <nav class="nav" id="main-nav">
-        <a href="index_de.html">Startseite</a>
+      <nav class="nav" id="main-nav" aria-label="Hauptnavigation">
+        <a href="index_de.html" aria-current="page">Startseite</a>
         <a href="trips_de.html">Reisen</a>
         <a href="about_de.html">Über uns</a>
       </nav>
-
-      <!-- Menü-Button -->
-      <button class="menu-btn" id="menu-btn" aria-label="menu">☰</button>
+      <button class="menu-btn" id="menu-btn" aria-label="Menü öffnen">Menü</button>
     </div>
   </header>
 
-  <!-- Hauptinhalt -->
   <main>
     <section class="hero">
       <div class="container">
-        <h1>Steig auf und los!</h1>
-        <p>Wir genießen die Fahrt</p>
-        <a class="btn" href="trips_de.html">Routen ansehen</a>
+        <h1>Aufsteigen und losfahren!</h1>
+        <p>Wir planen Touren, die man gern weiterempfiehlt.</p>
+        <div class="hero-actions">
+          <a class="btn" href="trips_de.html">Touren ansehen</a>
+          <a class="btn btn-outline" href="about_de.html">Kontakt aufnehmen</a>
+        </div>
       </div>
     </section>
 
     <section class="features container">
       <article>
-        <h3>Bewährte Routen</h3>
-        <p>Kurz- und Langstreckenrouten auf malerischen Straßen mit praktischen Stopps.</p>
+        <h3>Erprobte Routen</h3>
+        <p>Kurze und lange Strecken auf malerischen Straßen mit praktischen Stopps und Servicepunkten.</p>
       </article>
       <article>
-        <h3>Erfahrungen teilen</h3>
-        <p>Fügen Sie Fotos und Notizen zu Ihren Reisen hinzu – wir erstellen eine Inspirationsbibliothek.</p>
+        <h3>Erlebnisse teilen</h3>
+        <p>Fügen Sie Notizen, Bilder und Tipps hinzu – wir bauen eine Inspirationsbibliothek für Rider:innen.</p>
       </article>
       <article>
-        <h3>Planung</h3>
-        <p>Routenpakete mit Karte, Empfehlungen und Sehenswürdigkeiten.</p>
+        <h3>Fertige Pakete</h3>
+        <p>Erhalten Sie Karten, Empfehlungen und Sehenswürdigkeiten für jeden Reisetag auf einen Blick.</p>
       </article>
     </section>
 
-    <section class="latest container">
-      <h2>Neueste Reisen</h2>
-      <div class="cards">
-        <div class="card">
-          <img src="images/mehring.jpg" alt="Mehring" width="600" height="350"> 
-          <h4>Abendspaziergang</h4>
-          <p>Leichte Route mit schönen Aussichten.</p>
-        </div>
-        <div class="card">
-          <img src="images/vulkansee.jpg" alt="See" width="600" height="350">
-          <h4>Seen und Täler</h4>
-          <p>Komfortable Reise für entspanntes Wassererlebnis.</p>
-        </div>
-        <div class="card">
-          <img src="images/Mosel.jpg" alt="Mosel" width="600" height="350">
-          <h4>Mosel</h4>
-          <p>Kurzstrecke für das Wochenende.</p>
-        </div>
+    <section class="latest container" aria-labelledby="latest-trips-heading">
+      <div class="section-header">
+        <h2 id="latest-trips-heading">Neueste Reisen</h2>
+        <a class="section-cta" href="trips_de.html">Alle ansehen</a>
       </div>
+      <div class="cards">
+        <article class="card">
+          <img src="images/mehring.jpg" alt="Abendliche Aussicht auf Mehring" width="600" height="350">
+          <h4><a href="trip-mehring_de.html">Abendrunde in Mehring</a></h4>
+          <p>Entspannte Tour entlang der Mosel mit Blick auf die Weinberge.</p>
+        </article>
+        <article class="card">
+          <img src="images/vulkansee.jpg" alt="Route rund um einen Vulkansee" width="600" height="350">
+          <h4><a href="trip-vulkansee_de.html">Seen und Täler der Eifel</a></h4>
+          <p>Komfortable Reise mit Wasser-Highlights und sanften Pässen.</p>
+        </article>
+        <article class="card">
+          <img src="images/Mosel.jpg" alt="Straßen entlang der Mosel" width="600" height="350">
+          <h4><a href="trip-mosel_de.html">Mosel-Wochenende</a></h4>
+          <p>Kompakte Wochenendtour für alle, die kurz raus wollen.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="signup container" aria-labelledby="signup-heading">
+      <h2 id="signup-heading">Updates per Mail</h2>
+      <p>Abonnieren Sie neue Touren, Packlisten und Gear-Empfehlungen direkt in Ihrer Inbox.</p>
+      <form class="signup-form">
+        <label for="signup-email" class="visually-hidden">E-Mail eingeben</label>
+        <input type="email" id="signup-email" name="email" placeholder="you@example.com" required>
+        <button type="submit" class="btn">Abonnieren</button>
+      </form>
     </section>
   </main>
 
-  <!-- Fußzeile -->
   <footer class="site-footer">
     <div class="container">
-      <p>© <span id="year"></span> Road & Ride — Alle Rechte vorbehalten</p>
-      <nav class="footer-nav">
+      <p>© <span id="year"></span> Road & Ride. Alle Rechte vorbehalten.</p>
+      <nav class="footer-nav" aria-label="Fußnavigation">
         <a href="about_de.html">Kontakt</a>
-        <a href="#">Datenschutzrichtlinie</a>
+        <a href="#">Datenschutzerklärung</a>
       </nav>
     </div>
   </footer>
 
-  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Road & Ride — Вечерняя прогулка по Мерингу</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="trip-detail">
+  <div class="language-switch" aria-label="Переключатель языка">
+    <span aria-current="page">RU</span> |
+    <a href="trip-mehring_de.html" lang="de">DE</a>
+  </div>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="/">Road & Ride</a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="index.html">Главная</a>
+        <a href="trips.html">Маршруты</a>
+        <a href="about.html">О нас</a>
+      </nav>
+      <a class="btn btn-outline" href="trips.html">Назад к списку</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="trip-hero" aria-labelledby="trip-title">
+      <div class="container">
+        <p class="trip-badge">Последние поездки</p>
+        <h1 id="trip-title">Вечерняя прогулка по Мерингу</h1>
+        <p class="trip-summary">Лёгкий маршрут на 82 км вдоль излучин Мозеля — идеально, чтобы завершить день красивыми видами и ужином в винном дворике.</p>
+        <ul class="trip-meta">
+          <li><strong>Дистанция:</strong> 82 км</li>
+          <li><strong>Продолжительность:</strong> 2,5 часа с остановками</li>
+          <li><strong>Сложность:</strong> Новички+</li>
+        </ul>
+      </div>
+      <figure class="trip-hero-media">
+        <img src="images/mehring.jpg" alt="Закат над Мерингом, вид с серпантина">
+      </figure>
+    </section>
+
+    <section class="container trip-content">
+      <div class="trip-highlights">
+        <h2>Что вас ждёт</h2>
+        <ul>
+          <li>Панорамные точки у Mehringer Höhe и Rioler Kletterwald.</li>
+          <li>Тихие сельские дороги без плотного трафика.</li>
+          <li>Дегустация местных рислингов прямо на берегу реки.</li>
+        </ul>
+      </div>
+
+      <div class="trip-itinerary">
+        <h2>Маршрут</h2>
+        <ol>
+          <li><strong>Старт: Trier-Ehrang</strong> — быстрый прогрев и перехват B53.</li>
+          <li><strong>Петля по виноградникам</strong> — серпантины к Aussichtspunkt Mehring.</li>
+          <li><strong>Rioler Erlebnispark</strong> — короткий перерыв на кофе.</li>
+          <li><strong>Финиш: Leiwen</strong> — ужин в Weingut, закат над Мозелем.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="media-block" aria-labelledby="media-heading">
+      <div class="container">
+        <h2 id="media-heading">Фото и видео</h2>
+        <p>Погрузитесь в атмосферу маршрута: снимки из седла и короткий тизер-фильм.</p>
+        <div class="media-grid">
+          <figure>
+            <img src="images/mehring.jpg" alt="Серпантин в лучах заходящего солнца">
+            <figcaption>Панорама на подъезде к Aussichtspunkt Mehring.</figcaption>
+          </figure>
+          <figure>
+            <img src="images/Mosel.jpg" alt="Дорога вдоль реки Мозель">
+            <figcaption>Вечерние огни на набережной Мозеля.</figcaption>
+          </figure>
+          <figure class="media-video">
+            <video controls poster="images/mehring.jpg">
+              <source src="videos/trip-mehring-teaser.mp4" type="video/mp4">
+              Ваш браузер не поддерживает воспроизведение видео.
+            </video>
+            <figcaption>Короткий тизер поездки (замените на свой ролик).</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="container trip-cta">
+      <h2>Хотите поехать с нами?</h2>
+      <p>Оставьте заявку — пришлём GPX трек, список остановок и рекомендации по экипировке.</p>
+      <a class="btn" href="about.html">Связаться</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Road & Ride. Все права защищены.</p>
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <a href="about.html">Контакты</a>
+        <a href="#">Политика конфиденциальности</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
