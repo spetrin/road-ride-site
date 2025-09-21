@@ -5,30 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Road & Ride — Motorradreisen</title>
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Hero-Hintergrund wie in RU-Version */
-    .hero {
-      background: url("images/hero.jpg") no-repeat center center;
-      background-size: cover;
-      color: white;
-      text-align: center;
-      padding: 120px 20px;
-      position: relative;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4); /* Abdunkeln für bessere Lesbarkeit */
-    }
-
-    .hero .container {
-      position: relative;
-      z-index: 1;
-    }
-  </style>
 </head>
 <body>
 
@@ -38,19 +14,24 @@
     <a href="index_de.html">DE</a>
   </div>
 
-  <!-- Header mit Navigation -->
+  <!-- Kopfbereich -->
   <header class="site-header">
     <div class="container">
       <a class="logo" href="/">Road & Ride</a>
-      <nav class="nav">
+
+      <!-- Navigation -->
+      <nav class="nav" id="main-nav">
         <a href="index_de.html">Startseite</a>
         <a href="trips_de.html">Reisen</a>
         <a href="about_de.html">Über uns</a>
       </nav>
-      <button class="menu-btn" aria-label="menu">☰</button>
+
+      <!-- Menü-Button -->
+      <button class="menu-btn" id="menu-btn" aria-label="menu">☰</button>
     </div>
   </header>
 
+  <!-- Hauptinhalt -->
   <main>
     <section class="hero">
       <div class="container">
@@ -79,24 +60,25 @@
       <h2>Neueste Reisen</h2>
       <div class="cards">
         <div class="card">
-          <img src="https://via.placeholder.com/600x350?text=Alps" alt="Alps">
-          <h4>Alpen: 3 Tage</h4>
-          <p>Leichte Route mit schönen Aussichten und bequemen Übernachtungen.</p>
+          <img src="images/mehring.jpg" alt="Mehring" width="600" height="350"> 
+          <h4>Abendspaziergang</h4>
+          <p>Leichte Route mit schönen Aussichten.</p>
         </div>
         <div class="card">
-          <img src="https://via.placeholder.com/600x350?text=Lake" alt="Lake">
+          <img src="images/vulkansee.jpg" alt="See" width="600" height="350">
           <h4>Seen und Täler</h4>
           <p>Komfortable Reise für entspanntes Wassererlebnis.</p>
         </div>
         <div class="card">
-          <img src="images/ryker.jpg" alt="Ryker" width="600" height="350">
-          <h4>Waldwege</h4>
-          <p>Kurzstrecke für das Wochenende – ideal für die Familie.</p>
+          <img src="images/Mosel.jpg" alt="Mosel" width="600" height="350">
+          <h4>Mosel</h4>
+          <p>Kurzstrecke für das Wochenende.</p>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- Fußzeile -->
   <footer class="site-footer">
     <div class="container">
       <p>© <span id="year"></span> Road & Ride — Alle Rechte vorbehalten</p>
@@ -107,6 +89,7 @@
     </div>
   </footer>
 
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
