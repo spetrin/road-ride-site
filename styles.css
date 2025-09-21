@@ -6,9 +6,7 @@
 }
 
 /* Базовые стили */
-* { 
-  box-sizing: border-box; 
-}
+* { box-sizing: border-box; }
 
 body {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -28,6 +26,8 @@ body {
 .site-header { 
   background: #fff; 
   border-bottom: 1px solid #e6e6e6; 
+  position: relative; /* для меню */
+  z-index: 1000;
 }
 .site-header .container { 
   display: flex; 
@@ -67,7 +67,6 @@ body {
   text-align: center;
   position: relative;
 }
-
 .hero::after {
   content: "";
   position: absolute;
@@ -75,18 +74,9 @@ body {
   width: 100%; height: 100%;
   background: rgba(0,0,0,0.4);
 }
-
-.hero .container { 
-  position: relative; 
-  z-index: 1; 
-}
-.hero h1 { 
-  margin: 0 0 10px; 
-  font-size: 2rem; 
-}
-.hero p { 
-  margin-bottom: 20px; 
-}
+.hero .container { position: relative; z-index: 1; }
+.hero h1 { margin: 0 0 10px; font-size: 2rem; }
+.hero p { margin-bottom: 20px; }
 
 /* Кнопки */
 .btn { 
@@ -130,9 +120,7 @@ body {
   height: 160px; 
   object-fit: cover; 
 }
-.card h4 { 
-  margin: 12px; 
-}
+.card h4 { margin: 12px; }
 .card p { 
   margin: 0 12px 16px; 
   color: var(--muted); 
@@ -186,24 +174,25 @@ body {
     grid-template-columns: 1fr; 
   }
 
-  .nav {
+  .nav { 
     flex-direction: column;
     gap: 12px;
     background: #fff;
     position: absolute;
-    top: 100%;
+    top: 100%;    /* под шапкой */
     right: 0;
+    left: 0;      /* растягиваем на всю ширину */
     padding: 10px;
-    border: 1px solid #e6e6e6;
-    display: none;        /* скрыто по умолчанию */
-    z-index: 1000;        /* чтобы меню не пряталось */
+    border-top: 1px solid #e6e6e6;
+    display: none;
+    z-index: 1001;
   }
 
   .nav.active { 
-    display: flex;        /* показывается при клике */
+    display: flex; 
   }
 
   .menu-btn { 
-    display: block;       /* показываем кнопку на мобилке */
+    display: block; 
   }
 }
