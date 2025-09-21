@@ -78,8 +78,23 @@ body {
 
 /* Адаптив */
 @media (max-width: 900px) {
-  .features, .latest .cards { grid-template-columns: 1fr; }
-  .nav { display: none; flex-direction: column; gap: 12px; background: #fff; position: absolute; top: 100%; right: 0; padding: 10px; border: 1px solid #e6e6e6; display: none; }
+  .features,
+  .latest .cards { grid-template-columns: 1fr; }
+
+  .nav {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    background: #fff;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    padding: 10px;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+  }
+
   .nav.active { display: flex; }
+
   .menu-btn { display: block; }
 }

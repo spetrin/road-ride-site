@@ -8,23 +8,30 @@
 </head>
 <body>
 
+  <!-- Переключатель языка -->
   <div class="language-switch">
     <a href="index.html">RU</a> | 
     <a href="index_de.html">DE</a>
   </div>
 
+  <!-- Шапка -->
   <header class="site-header">
     <div class="container">
       <a class="logo" href="/">Road & Ride</a>
-      <nav class="nav">
+
+      <!-- Навигация -->
+      <nav class="nav" id="main-nav">
         <a href="index.html">Главная</a>
         <a href="trips.html">Поездки</a>
         <a href="about.html">О нас</a>
       </nav>
-      <button class="menu-btn" aria-label="menu">☰</button>
+
+      <!-- Кнопка меню -->
+      <button class="menu-btn" id="menu-btn" aria-label="menu">☰</button>
     </div>
   </header>
 
+  <!-- Основной контент -->
   <main>
     <section class="hero">
       <div class="container">
@@ -71,6 +78,7 @@
     </section>
   </main>
 
+  <!-- Подвал -->
   <footer class="site-footer">
     <div class="container">
       <p>© <span id="year"></span> Road & Ride — Все права защищены</p>
@@ -81,6 +89,7 @@
     </div>
   </footer>
 
+  <!-- Скрипт -->
   <script src="script.js"></script>
 </body>
 </html>
