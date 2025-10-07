@@ -85,67 +85,250 @@ const galleryGrids = document.querySelectorAll(".gallery-grid");
 if (galleryGrids.length) {
   const lang = (document.documentElement.lang || "en").toLowerCase();
   const closeLabels = {
-    de: "Galerie schließen",
+    de: "Galerie schliessen",
     ru: "Закрыть галерею",
     en: "Close gallery"
   };
+  const prevLabels = {
+    de: "Vorheriges Foto",
+    ru: "Предыдущее фото",
+    en: "Previous photo"
+  };
+  const nextLabels = {
+    de: "Naechstes Foto",
+    ru: "Следующее фото",
+    en: "Next photo"
+  };
+  const openLabels = {
+    de: "Galerieansicht oeffnen",
+    ru: "Открыть галерею",
+    en: "Open gallery"
+  };
 
   galleryGrids.forEach(grid => {
+    const items = Array.from(grid.querySelectorAll(".gallery-item"));
+    if (!items.length) return;
+
+    let currentIndex = 0;
     let activeTrigger = null;
+
     const closeLabel = grid.dataset.closeLabel || closeLabels[lang] || closeLabels.en;
+    const prevLabel = grid.dataset.prevLabel || prevLabels[lang] || prevLabels.en;
+    const nextLabel = grid.dataset.nextLabel || nextLabels[lang] || nextLabels.en;
+    const openLabel = grid.dataset.openLabel || openLabels[lang] || openLabels.en;
+
+    const featured = document.createElement("button");
+    featured.type = "button";
+    featured.className = "gallery-featured";
+    featured.setAttribute("aria-label", openLabel);
+
+    const featuredImg = document.createElement("img");
+    featuredImg.alt = "";
+
+    const featuredCaption = document.createElement("span");
+    featuredCaption.className = "gallery-featured__caption";
+    featuredCaption.hidden = true;
+
+    featured.append(featuredImg, featuredCaption);
+    grid.parentNode.insertBefore(featured, grid);
+
+    featured.addEventListener("click", () => {
+      activeTrigger = items[currentIndex];
+      openLightbox(currentIndex);
+    });
+
+    const hasMultiple = items.length > 1;
+
+    let prevBtn;
+    let nextBtn;
+
+    if (hasMultiple) {
+      const controls = document.createElement("div");
+      controls.className = "gallery-controls";
+
+      prevBtn = document.createElement("button");
+      prevBtn.type = "button";
+      prevBtn.className = "gallery-nav gallery-nav--prev";
+      prevBtn.setAttribute("aria-label", prevLabel);
+      prevBtn.innerHTML = "<span aria-hidden=\"true\">&#9664;</span>";
+
+      nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.className = "gallery-nav gallery-nav--next";
+      nextBtn.setAttribute("aria-label", nextLabel);
+      nextBtn.innerHTML = "<span aria-hidden=\"true\">&#9654;</span>";
+
+      controls.append(prevBtn, nextBtn);
+      grid.after(controls);
+    }
+
     const lightbox = document.createElement("div");
     lightbox.className = "gallery-lightbox";
 
     const closeBtn = document.createElement("button");
     closeBtn.type = "button";
+    closeBtn.className = "gallery-lightbox__close";
     closeBtn.setAttribute("aria-label", closeLabel);
     closeBtn.innerHTML = "&times;";
+
+    const prevLightboxBtn = document.createElement("button");
+    prevLightboxBtn.type = "button";
+    prevLightboxBtn.className = "gallery-lightbox__nav gallery-lightbox__nav--prev";
+    prevLightboxBtn.setAttribute("aria-label", prevLabel);
+    prevLightboxBtn.innerHTML = "<span aria-hidden=\"true\">&#9664;</span>";
+
+    const nextLightboxBtn = document.createElement("button");
+    nextLightboxBtn.type = "button";
+    nextLightboxBtn.className = "gallery-lightbox__nav gallery-lightbox__nav--next";
+    nextLightboxBtn.setAttribute("aria-label", nextLabel);
+    nextLightboxBtn.innerHTML = "<span aria-hidden=\"true\">&#9654;</span>";
 
     const lightboxImg = document.createElement("img");
     lightboxImg.alt = "";
 
-    lightbox.append(closeBtn, lightboxImg);
+    if (!hasMultiple) {
+      prevLightboxBtn.hidden = true;
+      nextLightboxBtn.hidden = true;
+    }
+
+    lightbox.append(closeBtn, prevLightboxBtn, lightboxImg, nextLightboxBtn);
     document.body.appendChild(lightbox);
 
-    const openLightbox = (trigger, src, alt) => {
-      activeTrigger = trigger;
-      lightboxImg.src = src;
-      lightboxImg.alt = alt || "";
+    items.forEach((item, index) => {
+      item.dataset.galleryIndex = index;
+    });
+
+    function getImageData() {
+      const item = items[currentIndex];
+      const img = item ? item.querySelector("img") : null;
+      const src = item ? item.dataset.full || (img && img.currentSrc) || (img && img.src) || "" : "";
+      const alt = img ? img.alt : "";
+      return { src, alt };
+    }
+
+    function updateFeatured() {
+      const data = getImageData();
+      featuredImg.src = data.src;
+      featuredImg.alt = data.alt;
+      if (data.alt) {
+        featuredCaption.textContent = data.alt;
+        featuredCaption.hidden = false;
+      } else {
+        featuredCaption.textContent = "";
+        featuredCaption.hidden = true;
+      }
+      const label = data.alt ? `${openLabel}: ${data.alt}` : openLabel;
+      featured.setAttribute("aria-label", label);
+    }
+
+    function setActive(index) {
+      const safeIndex = (index + items.length) % items.length;
+      if (items[currentIndex]) {
+        items[currentIndex].classList.remove("is-active");
+      }
+      currentIndex = safeIndex;
+      items[currentIndex].classList.add("is-active");
+      activeTrigger = items[currentIndex];
+      updateFeatured();
+    }
+
+    function ensureVisible() {
+      const activeItem = items[currentIndex];
+      if (activeItem && activeItem.scrollIntoView) {
+        activeItem.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
+    }
+
+    function refreshLightboxImage() {
+      const data = getImageData();
+      lightboxImg.src = data.src;
+      lightboxImg.alt = data.alt;
+    }
+
+    function stepImage(delta) {
+      if (!hasMultiple) return;
+      setActive(currentIndex + delta);
+      if (!lightbox.classList.contains("is-open")) {
+        ensureVisible();
+      } else {
+        refreshLightboxImage();
+      }
+    }
+
+    function openLightbox(index) {
+      const targetIndex = typeof index === "number" ? index : currentIndex;
+      setActive(targetIndex);
+      refreshLightboxImage();
       lightbox.classList.add("is-open");
       closeBtn.focus();
-    };
+      document.addEventListener("keydown", handleDocumentKeydown);
+    }
 
-    const closeLightbox = () => {
+    function closeLightbox() {
       lightbox.classList.remove("is-open");
       lightboxImg.src = "";
       lightboxImg.alt = "";
+      document.removeEventListener("keydown", handleDocumentKeydown);
       if (activeTrigger) {
         activeTrigger.focus();
-        activeTrigger = null;
       }
-    };
+      activeTrigger = null;
+    }
 
-    const showImage = trigger => {
-      if (!trigger) return;
-      const img = trigger.querySelector("img");
-      const src = trigger.dataset.full || (img && img.currentSrc) || (img && img.src) || "";
-      const alt = img ? img.alt : "";
-      openLightbox(trigger, src, alt);
-    };
+    function handleDocumentKeydown(event) {
+      if (!lightbox.classList.contains("is-open")) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeLightbox();
+        return;
+      }
+      if (!hasMultiple) return;
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        stepImage(1);
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        stepImage(-1);
+      }
+    }
 
     grid.addEventListener("click", event => {
       const trigger = event.target.closest(".gallery-item");
       if (!trigger) return;
-      showImage(trigger);
+      const index = items.indexOf(trigger);
+      activeTrigger = trigger;
+      openLightbox(index);
     });
 
     grid.addEventListener("keydown", event => {
-      if (event.key !== "Enter" && event.key !== " ") return;
       const trigger = event.target.closest(".gallery-item");
       if (!trigger) return;
-      event.preventDefault();
-      showImage(trigger);
+
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        const index = items.indexOf(trigger);
+        activeTrigger = trigger;
+        openLightbox(index);
+      } else if (hasMultiple && event.key === "ArrowRight") {
+        event.preventDefault();
+        stepImage(1);
+        items[currentIndex].focus();
+      } else if (hasMultiple && event.key === "ArrowLeft") {
+        event.preventDefault();
+        stepImage(-1);
+        items[currentIndex].focus();
+      }
     });
+
+    if (hasMultiple && prevBtn && nextBtn) {
+      prevBtn.addEventListener("click", () => {
+        stepImage(-1);
+      });
+
+      nextBtn.addEventListener("click", () => {
+        stepImage(1);
+      });
+    }
 
     closeBtn.addEventListener("click", closeLightbox);
 
@@ -153,10 +336,18 @@ if (galleryGrids.length) {
       if (event.target === lightbox) closeLightbox();
     });
 
-    document.addEventListener("keydown", event => {
-      if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
-        closeLightbox();
-      }
-    });
+    if (hasMultiple) {
+      prevLightboxBtn.addEventListener("click", () => {
+        stepImage(-1);
+        prevLightboxBtn.focus();
+      });
+
+      nextLightboxBtn.addEventListener("click", () => {
+        stepImage(1);
+        nextLightboxBtn.focus();
+      });
+    }
+
+    setActive(0);
   });
 }
