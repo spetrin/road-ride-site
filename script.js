@@ -1,4 +1,4 @@
-// Мобильное меню
+﻿// Мобильное меню
 const menuBtn = document.querySelector(".menu-btn");
 const nav = document.querySelector(".nav");
 
@@ -76,6 +76,87 @@ if (contactForms.length) {
 
       window.location.href = mailtoUrl;
       setTimeout(() => form.reset(), 200);
+    });
+  });
+}
+
+const galleryGrids = document.querySelectorAll(".gallery-grid");
+
+if (galleryGrids.length) {
+  const lang = (document.documentElement.lang || "en").toLowerCase();
+  const closeLabels = {
+    de: "Galerie schließen",
+    ru: "Закрыть галерею",
+    en: "Close gallery"
+  };
+
+  galleryGrids.forEach(grid => {
+    let activeTrigger = null;
+    const closeLabel = grid.dataset.closeLabel || closeLabels[lang] || closeLabels.en;
+    const lightbox = document.createElement("div");
+    lightbox.className = "gallery-lightbox";
+
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.setAttribute("aria-label", closeLabel);
+    closeBtn.innerHTML = "&times;";
+
+    const lightboxImg = document.createElement("img");
+    lightboxImg.alt = "";
+
+    lightbox.append(closeBtn, lightboxImg);
+    document.body.appendChild(lightbox);
+
+    const openLightbox = (trigger, src, alt) => {
+      activeTrigger = trigger;
+      lightboxImg.src = src;
+      lightboxImg.alt = alt || "";
+      lightbox.classList.add("is-open");
+      closeBtn.focus();
+    };
+
+    const closeLightbox = () => {
+      lightbox.classList.remove("is-open");
+      lightboxImg.src = "";
+      lightboxImg.alt = "";
+      if (activeTrigger) {
+        activeTrigger.focus();
+        activeTrigger = null;
+      }
+    };
+
+    const showImage = trigger => {
+      if (!trigger) return;
+      const img = trigger.querySelector("img");
+      const src = trigger.dataset.full || (img && img.currentSrc) || (img && img.src) || "";
+      const alt = img ? img.alt : "";
+      openLightbox(trigger, src, alt);
+    };
+
+    grid.addEventListener("click", event => {
+      const trigger = event.target.closest(".gallery-item");
+      if (!trigger) return;
+      showImage(trigger);
+    });
+
+    grid.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const trigger = event.target.closest(".gallery-item");
+      if (!trigger) return;
+      event.preventDefault();
+      showImage(trigger);
+    });
+
+    closeBtn.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("click", event => {
+      if (event.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+        closeLightbox();
+      }
     });
   });
 }
