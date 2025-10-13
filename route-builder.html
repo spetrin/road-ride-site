@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Road & Ride - Route Builder</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #0f172a;
+      --muted: #94a3b8;
+      --accent: #e47c34;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+
+    header .brand {
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    header .actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button,
+    .btn {
+      appearance: none;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #111827;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    button.primary:is(:hover, :focus-visible) {
+      transform: translateY(-1px);
+    }
+
+    button.is-disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #wrap {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) 1fr;
+      min-height: calc(100dvh - 56px);
+    }
+
+    #sidebar {
+      border-right: 1px solid #e5e7eb;
+      padding: 12px 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #f8fafc;
+    }
+
+    #map {
+      height: calc(100dvh - 56px);
+      width: 100%;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #ffffff;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      font: inherit;
+      resize: vertical;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px dashed #e5e7eb;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .hr {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 8px 0;
+    }
+
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .leaflet-container {
+      filter: grayscale(100%) contrast(1.1) brightness(1.15);
+    }
+
+    .leaflet-control-zoom,
+    .leaflet-control-attribution {
+      display: none;
+    }
+
+    .route-line {
+      stroke: var(--accent) !important;
+      stroke-width: 3px !important;
+    }
+
+    #points {
+      margin: 8px 0 0 18px;
+      padding-left: 0;
+    }
+
+    #points li {
+      font-size: 0.85rem;
+      color: #1f2937;
+    }
+
+    @media (max-width: 960px) {
+      #wrap {
+        grid-template-columns: 1fr;
+      }
+
+      #sidebar {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      #sidebar .card {
+        flex: 1 1 280px;
+      }
+
+      #map {
+        height: 60vh;
+      }
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha512-o9N1jH+3r0pJIUKGwEuITTwSb9VjA36TObgGJE0E7E5Wdl66iRS0LlwM651c01qmPvvrL1jAUx0xGfLlr3rGQw==" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha512-Wyn36GZ8V+8mQpAO6QW2LaxhUJW6QcgO5Kb/6VQwWi4KFOeFHrgb3R04QLbTjaCj1eO0MJ0GJtG8skhNf38B0w==" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="https://unpkg.com/@tmcw/togpx@0.5.5/togpx.js"></script>
+</head>
+<body>
+  <header>
+    <div class="brand">Road & Ride - Route Builder</div>
+    <div class="actions">
+      <button class="primary" id="btnSave">Сохранить</button>
+    </div>
+  </header>
+  <div id="wrap">
+    <aside id="sidebar">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <h3 style="margin:0;font-size:1.05rem" data-route-name>Saarburg -> Trier</h3>
+          <span class="pill" data-route-mode>Minimal Route</span>
+        </div>
+        <div class="muted" data-route-duration>~55-65 км · 2.5-3 ч</div>
+        <div class="hr"></div>
+        <label class="hint" for="desc">Описание для подсказок:</label>
+        <textarea id="desc" class="input" rows="5" placeholder="Пример: Saarburg -> Nittel -> Konz -> Oberemmel -> Trier"></textarea>
+        <p class="hint">Добавьте короткие заметки — они появятся в подсказках и превью.</p>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <button id="btnDraw" class="btn">✏ Нарисовать</button>
+          <button id="btnEdit" class="btn">✂ Править</button>
+          <button id="btnDelete" class="btn">🗑 Очистить</button>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+          <button id="btnSnap" class="btn">🧲 Привязать к дороге</button>
+          <button id="btnSimplify" class="btn">🪄 Упростить</button>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+          <button id="btnExportGeoJSON" class="btn">⬇ GeoJSON</button>
+          <button id="btnExportGPX" class="btn">⬇ GPX</button>
+        </div>
+        <p class="hint">Snap использует публичный OSRM (демо). Для продакшна замените на собственный сервис.</p>
+      </div>
+
+      <div class="card">
+        <span class="muted">Точки маршрута (клик по линии добавляет вершины):</span>
+        <ol id="points" class="list"></ol>
+      </div>
+    </aside>
+    <main>
+      <div id="map"></div>
+    </main>
+  </div>
+
+  <script>
+    const ROUTE_META = {
+      "saarburg-trier": { title: "Saarburg -> Trier", subtitle: "~55-65 км · 2.5-3 ч", mode: "Минималистичный маршрут", center: [49.639, 6.544], zoom: 12 },
+      "trip-mehring": { title: "Петля вокруг Mehring", subtitle: "82 км · 2.5 ч", mode: "Afterwork loop", center: [49.789, 6.792], zoom: 11 },
+      "trip-vulkansee": { title: "Поездка к вулканическим озёрам", subtitle: "210 км · 1 день", mode: "Дальняя поездка", center: [50.21, 6.78], zoom: 10 },
+      "trip-mosel": { title: "Trier -> Großglockner", subtitle: "~1020 км · 7 дней", mode: "Большое путешествие", center: [49.8, 7.2], zoom: 7 }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const routeId = params.get("route") || "saarburg-trier";
+    const routeMeta = ROUTE_META[routeId] || ROUTE_META["saarburg-trier"];
+    const storageKey = `roadandrideRoute:${routeId}`;
+
+    document.querySelector("[data-route-name]").textContent = routeMeta.title;
+    document.querySelector("[data-route-duration]").textContent = routeMeta.subtitle;
+    document.title = `Road & Ride - Route Builder (${routeMeta.title})`;
+
+    const descField = document.getElementById("desc");
+
+    const map = L.map("map", { zoomControl: false, attributionControl: false }).setView(routeMeta.center, routeMeta.zoom);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 16, opacity: 0.30 }).addTo(map);
+
+    const drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    const drawOptions = {
+      color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim(),
+      weight: 4,
+      opacity: 0.95,
+      className: "route-line"
+    };
+
+    const drawControl = new L.Control.Draw({
+      draw: {
+        polygon: false,
+        rectangle: false,
+        circle: false,
+        marker: false,
+        circlemarker: false,
+        polyline: { shapeOptions: drawOptions }
+      },
+      edit: { featureGroup: drawnItems, remove: false }
+    });
+
+    map.addControl(drawControl);
+
+    let currentLine = null;
+
+    map.on(L.Draw.Event.CREATED, event => {
+      if (event.layerType === "polyline") {
+        if (currentLine) drawnItems.removeLayer(currentLine);
+        currentLine = event.layer;
+        currentLine.setStyle(drawOptions);
+        drawnItems.addLayer(currentLine);
+        fitToLine();
+        refreshPointsList();
+      }
+    });
+
+    map.on("draw:edited", refreshPointsList);
+
+    function fitToLine() {
+      if (currentLine) {
+        map.fitBounds(currentLine.getBounds(), { padding: [40, 40] });
+      }
+    }
+
+    function refreshPointsList() {
+      const list = document.getElementById("points");
+      list.innerHTML = "";
+      if (!currentLine) return;
+      currentLine.getLatLngs().forEach((latLng, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${String(index + 1).padStart(2, "0")} · ${latLng.lat.toFixed(5)}, ${latLng.lng.toFixed(5)}`;
+        list.appendChild(li);
+      });
+      toggleSaveState(false);
+    }
+
+    const btnDraw = document.getElementById("btnDraw");
+    const btnEdit = document.getElementById("btnEdit");
+    const btnDelete = document.getElementById("btnDelete");
+    const btnSimplify = document.getElementById("btnSimplify");
+    const btnSnap = document.getElementById("btnSnap");
+    const btnExportGeoJSON = document.getElementById("btnExportGeoJSON");
+    const btnExportGPX = document.getElementById("btnExportGPX");
+    const btnSave = document.getElementById("btnSave");
+
+    btnDraw.onclick = () => new L.Draw.Polyline(map, drawControl.options.draw.polyline).enable();
+    btnEdit.onclick = () => new L.EditToolbar.Edit(map, { featureGroup: drawnItems }).enable();
+    btnDelete.onclick = () => {
+      if (currentLine) {
+        drawnItems.removeLayer(currentLine);
+        currentLine = null;
+        refreshPointsList();
+      }
+    };
+
+    btnSimplify.onclick = () => {
+      if (!currentLine) return;
+      const tolerance = 0.0005;
+      const simplified = L.LineUtil.simplify(
+        currentLine.getLatLngs().map(latLng => L.point(latLng.lng, latLng.lat)),
+        tolerance
+      ).map(point => L.latLng(point.y, point.x));
+      currentLine.setLatLngs(simplified);
+      refreshPointsList();
+    };
+
+    btnSnap.onclick = async () => {
+      if (!currentLine) return;
+      const coords = currentLine.getLatLngs().map(latLng => `${latLng.lng},${latLng.lat}`).join(";");
+      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&alternatives=false`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data && data.routes && data.routes[0]) {
+          const geometry = data.routes[0].geometry.coordinates.map(([lng, lat]) => L.latLng(lat, lng));
+          currentLine.setLatLngs(geometry);
+          fitToLine();
+          refreshPointsList();
+        }
+      } catch (error) {
+        console.warn("OSRM request failed", error);
+      }
+    };
+
+    function lineToGeoJSON() {
+      if (!currentLine) return null;
+      return currentLine.toGeoJSON();
+    }
+
+    btnExportGeoJSON.onclick = () => {
+      const feature = lineToGeoJSON();
+      if (!feature) return;
+      const blob = new Blob([JSON.stringify(feature, null, 2)], { type: "application/json" });
+      downloadBlob(blob, "route.geojson");
+    };
+
+    btnExportGPX.onclick = () => {
+      const feature = lineToGeoJSON();
+      if (!feature) return;
+      const gpx = toGPX({ type: "FeatureCollection", features: [feature] }, { creator: "Road & Ride" });
+      const blob = new Blob([gpx], { type: "application/gpx+xml" });
+      downloadBlob(blob, "route.gpx");
+    };
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    function buildPreviewFromLatLngs(latlngs) {
+      if (!latlngs.length) return "";
+      const width = 640;
+      const height = 360;
+      const padding = 28;
+      const innerW = width - padding * 2;
+      const innerH = height - padding * 2;
+
+      const lats = latlngs.map(point => point.lat);
+      const lngs = latlngs.map(point => point.lng);
+      let minLat = Math.min(...lats);
+      let maxLat = Math.max(...lats);
+      let minLng = Math.min(...lngs);
+      let maxLng = Math.max(...lngs);
+
+      if (minLat === maxLat) {
+        minLat -= 0.0001;
+        maxLat += 0.0001;
+      }
+      if (minLng === maxLng) {
+        minLng -= 0.0001;
+        maxLng += 0.0001;
+      }
+
+      const points = latlngs.map(({ lat, lng }) => {
+        const x = padding + ((lng - minLng) / (maxLng - minLng)) * innerW;
+        const y = padding + (1 - (lat - minLat) / (maxLat - minLat)) * innerH;
+        return { x, y };
+      });
+
+      const pathData = points
+        .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
+        .join(" ");
+
+      const start = points[0];
+      const end = points[points.length - 1];
+
+      const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+  </defs>
+  <rect width="${width}" height="${height}" fill="url(#bg)" rx="24" />
+  <path d="${pathData}" fill="none" stroke="#e47c34" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="${start.x.toFixed(2)}" cy="${start.y.toFixed(2)}" r="10" fill="#ffffff" stroke="#e47c34" stroke-width="4" />
+  <circle cx="${end.x.toFixed(2)}" cy="${end.y.toFixed(2)}" r="10" fill="#e47c34" />
+</svg>`;
+
+      return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+    }
+
+    function saveRoute() {
+      if (!currentLine) {
+        alert("Сначала нарисуйте маршрут");
+        return;
+      }
+      const geojson = lineToGeoJSON();
+      const latlngs = currentLine.getLatLngs();
+      const preview = buildPreviewFromLatLngs(latlngs);
+      const payload = {
+        routeId,
+        savedAt: new Date().toISOString(),
+        description: descField.value || "",
+        geojson,
+        preview
+      };
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(payload));
+      } catch (error) {
+        alert("Не удалось сохранить маршрут. Проверьте настройки браузера.");
+        return;
+      }
+      toggleSaveState(true);
+      alert("Маршрут сохранён. Он появится в карточке маршрута на сайте.");
+    }
+
+    function toggleSaveState(isSaved) {
+      if (isSaved) {
+        btnSave.textContent = "Сохранено";
+        btnSave.classList.add("is-disabled");
+        setTimeout(() => {
+          btnSave.textContent = "Сохранить";
+          btnSave.classList.remove("is-disabled");
+        }, 2000);
+      } else {
+        btnSave.textContent = "Сохранить";
+        btnSave.classList.remove("is-disabled");
+      }
+    }
+
+    btnSave.onclick = saveRoute;
+
+    function loadSavedRoute() {
+      let storedRaw = null;
+      try {
+        storedRaw = window.localStorage.getItem(storageKey);
+      } catch (error) {
+        return;
+      }
+      if (!storedRaw) return;
+      let stored;
+      try {
+        stored = JSON.parse(storedRaw);
+      } catch (error) {
+        return;
+      }
+      if (!stored || !stored.geojson) return;
+      const layerCollection = L.geoJSON(stored.geojson, { style: drawOptions });
+      const layers = layerCollection.getLayers().filter(layer => layer instanceof L.Polyline);
+      if (!layers.length) return;
+      if (currentLine) drawnItems.removeLayer(currentLine);
+      currentLine = layers[0];
+      currentLine.setStyle(drawOptions);
+      drawnItems.addLayer(currentLine);
+      fitToLine();
+      refreshPointsList();
+      if (stored.description) {
+        descField.value = stored.description;
+      }
+      toggleSaveState(true);
+    }
+
+    loadSavedRoute();
+  </script>
+</body>
+</html>
