@@ -634,6 +634,81 @@ const ROUTE_PREVIEW_COPY = {
   }
 };
 
+function renderCustomSvgRoute(container, svg, viewBox, geojson) {
+  if (!svg || !geojson) return;
+
+  let feature = geojson;
+  if (feature.type === "FeatureCollection" && Array.isArray(feature.features)) {
+    feature = feature.features.find(item => item && item.geometry && item.geometry.type === "LineString");
+  }
+
+  if (!feature || !feature.geometry || feature.geometry.type !== "LineString") return;
+
+  const coordinates = Array.isArray(feature.geometry.coordinates) ? feature.geometry.coordinates : [];
+  if (!coordinates.length) return;
+
+  const latlngs = coordinates.map(([lng, lat]) => ({ lat, lng }));
+  const lats = latlngs.map(point => point.lat);
+  const lngs = latlngs.map(point => point.lng);
+
+  let minLat = Math.min(...lats);
+  let maxLat = Math.max(...lats);
+  let minLng = Math.min(...lngs);
+  let maxLng = Math.max(...lngs);
+
+  if (minLat === maxLat) {
+    minLat -= 0.0001;
+    maxLat += 0.0001;
+  }
+  if (minLng === maxLng) {
+    minLng -= 0.0001;
+    maxLng += 0.0001;
+  }
+
+  const paddingX = viewBox.width * 0.08;
+  const paddingY = viewBox.height * 0.18;
+  const innerWidth = viewBox.width - paddingX * 2;
+  const innerHeight = viewBox.height - paddingY * 2;
+
+  const points = latlngs.map(({ lat, lng }) => {
+    const x = paddingX + ((lng - minLng) / (maxLng - minLng)) * innerWidth;
+    const y = paddingY + (1 - (lat - minLat) / (maxLat - minLat)) * innerHeight;
+    return { x, y };
+  });
+
+  const pathData = points
+    .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
+    .join(" ");
+
+  let customPath = svg.querySelector(".route-segment--custom");
+  if (!customPath) {
+    customPath = document.createElementNS(svg.namespaceURI, "path");
+    customPath.classList.add("route-segment", "route-segment--custom");
+    svg.appendChild(customPath);
+  }
+  customPath.setAttribute("d", pathData);
+
+  const startPoint = points[0];
+  const endPoint = points[points.length - 1];
+
+  function upsertMarker(selector, x, y, className, radius) {
+    let circle = svg.querySelector(selector);
+    if (!circle) {
+      circle = document.createElementNS(svg.namespaceURI, "circle");
+      circle.classList.add("route-point", className);
+      svg.appendChild(circle);
+    }
+    circle.setAttribute("cx", x.toFixed(2));
+    circle.setAttribute("cy", y.toFixed(2));
+    circle.setAttribute("r", radius);
+  }
+
+  upsertMarker(".route-point--custom-start", startPoint.x, startPoint.y, "route-point--custom-start", 11);
+  upsertMarker(".route-point--custom-finish", endPoint.x, endPoint.y, "route-point--custom-finish", 13);
+
+  container.classList.add("route-map--custom");
+}
+
 function injectCustomRoutePreview(container, routeId) {
   if (!("localStorage" in window)) return;
   let storedRaw = null;
@@ -649,7 +724,7 @@ function injectCustomRoutePreview(container, routeId) {
   } catch (error) {
     return;
   }
-  if (!stored || !stored.preview) return;
+  if (!stored || (!stored.preview && !stored.geojson)) return;
 
   const previewTarget = container.closest(".trip-route")?.querySelector("[data-route-preview]");
   if (!previewTarget) return;
@@ -662,18 +737,30 @@ function injectCustomRoutePreview(container, routeId) {
       ? new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeStyle: "short" }).format(date)
       : "";
 
-  const descriptionHtml = stored.description ? `<p class="trip-route-preview__meta">${stored.description.replace(/\n+/g, "<br>")}</p>` : "";
+  const svg = container.querySelector("svg");
+  if (svg) {
+    const config = MINI_ROUTE_DATA[routeId] || {};
+    const viewBox = config.viewBox || { width: 960, height: 360 };
+    renderCustomSvgRoute(container, svg, viewBox, stored.geojson);
+  }
 
-previewTarget.innerHTML = `
+  const descriptionHtml = stored.description
+    ? `<p class="trip-route-preview__meta">${stored.description.replace(/\n+/g, "<br>")}</p>`
+    : "";
+  const imageHtml = stored.preview
+    ? `<img class="trip-route-preview__image" src="${stored.preview}" alt="${copy.alt}">`
+    : "";
+
+  previewTarget.innerHTML = `
     <div class="trip-route-preview__header">
       <strong>${copy.title}</strong>
       ${formattedDate ? `<span class="trip-route-preview__meta">${copy.saved} ${formattedDate}</span>` : ""}
     </div>
-    <img class="trip-route-preview__image" src="${stored.preview}" alt="${copy.alt}">
+    ${imageHtml}
     ${descriptionHtml}
     <span class="trip-route-preview__meta">${copy.note}</span>
   `;
-  previewTarget.classList.add("is-visible");;
+  previewTarget.classList.add("is-visible");
 }
 
 if (routeMapContainers.length) {
@@ -803,7 +890,7 @@ if (routeMapContainers.length) {
     (config.segments || []).forEach(segment => {
       const pathElement = document.createElementNS(SVG_NS, "path");
       pathElement.setAttribute("d", segment.d);
-      pathElement.classList.add("route-segment");
+      pathElement.classList.add("route-segment", "route-segment--default");
       svg.appendChild(pathElement);
       const lines = getLines("segments", segment.id);
       setupInteractiveShape(pathElement, lines);
@@ -811,7 +898,7 @@ if (routeMapContainers.length) {
 
     (config.points || []).forEach(point => {
       const circle = document.createElementNS(SVG_NS, "circle");
-      circle.classList.add("route-point");
+      circle.classList.add("route-point", "route-point--default");
       circle.setAttribute("cx", point.x);
       circle.setAttribute("cy", point.y);
       circle.setAttribute("r", point.r || 12);

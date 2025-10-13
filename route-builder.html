@@ -281,6 +281,8 @@
 
     document.querySelector("[data-route-name]").textContent = routeMeta.title;
     document.querySelector("[data-route-duration]").textContent = routeMeta.subtitle;
+    const modeEl = document.querySelector("[data-route-mode]");
+    if (modeEl) modeEl.textContent = routeMeta.mode || "Minimal Route";
     document.title = `Road & Ride - Route Builder (${routeMeta.title})`;
 
     const descField = document.getElementById("desc");

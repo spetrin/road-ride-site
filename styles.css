@@ -1004,6 +1004,32 @@ a:not(.btn):focus {
   }
 }
 
+.route-map--custom .route-segment--default,
+.route-map--custom .route-point--default {
+  opacity: 0.18;
+}
+
+.route-map .route-segment--custom {
+  fill: none;
+  stroke: #e47c34;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 10px 20px rgba(228, 124, 52, 0.35));
+}
+
+.route-map .route-point--custom-start {
+  fill: #ffffff;
+  stroke: #e47c34;
+  stroke-width: 4;
+}
+
+.route-map .route-point--custom-finish {
+  fill: #e47c34;
+  stroke: #ffffff;
+  stroke-width: 4;
+}
+
 .trip-route-preview {
   margin-top: 20px;
   padding: 18px;
