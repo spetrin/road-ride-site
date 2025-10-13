@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Road & Ride - Route Builder</title>
+  <title>Road & Ride — Route Builder</title>
   <style>
     :root {
       --bg: #ffffff;
@@ -57,7 +57,6 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 0.92rem;
-      transition: background 0.2s ease, transform 0.2s ease;
     }
 
     button.primary {
@@ -66,13 +65,10 @@
       color: #ffffff;
     }
 
-    button.primary:is(:hover, :focus-visible) {
-      transform: translateY(-1px);
-    }
-
-    button.is-disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+    button.ghost {
+      background: transparent;
+      border-color: #e5e7eb;
+      color: #111827;
     }
 
     #wrap {
@@ -218,23 +214,24 @@
 </head>
 <body>
   <header>
-    <div class="brand">Road & Ride - Route Builder</div>
+    <div class="brand">Road & Ride — Route Builder</div>
     <div class="actions">
-      <button class="primary" id="btnSave">Сохранить</button>
+      <button class="ghost" id="btnLogin">Войти</button>
+      <button class="ghost" id="btnLogout" style="display:none">Выйти</button>
+      <button class="primary" id="btnPublish" title="Скоро">Опубликовать</button>
     </div>
   </header>
   <div id="wrap">
     <aside id="sidebar">
       <div class="card">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <h3 style="margin:0;font-size:1.05rem" data-route-name>Saarburg -> Trier</h3>
-          <span class="pill" data-route-mode>Minimal Route</span>
+          <h3 style="margin:0;font-size:1.05rem">Saarburg → Trier</h3>
+          <span class="pill">Minimal</span>
         </div>
-        <div class="muted" data-route-duration>~55-65 км · 2.5-3 ч</div>
+        <div class="muted">~55–65 км · 2.5–3 ч</div>
         <div class="hr"></div>
-        <label class="hint" for="desc">Описание для подсказок:</label>
-        <textarea id="desc" class="input" rows="5" placeholder="Пример: Saarburg -> Nittel -> Konz -> Oberemmel -> Trier"></textarea>
-        <p class="hint">Добавьте короткие заметки — они появятся в подсказках и превью.</p>
+        <label class="hint" for="desc">Описание:</label>
+        <textarea id="desc" class="input" rows="5" placeholder="Ключевые точки: Saarburg → Nittel → Konz → Oberemmel → Trier"></textarea>
       </div>
 
       <div class="card">
@@ -253,11 +250,11 @@
           <button id="btnExportGeoJSON" class="btn">⬇ GeoJSON</button>
           <button id="btnExportGPX" class="btn">⬇ GPX</button>
         </div>
-        <p class="hint">Snap использует публичный OSRM (демо). Для продакшна замените на собственный сервис.</p>
+        <p class="hint">Snap использует публичный OSRM (демо). Привязка может быть недоступна из-за лимитов.</p>
       </div>
 
       <div class="card">
-        <span class="muted">Точки маршрута (клик по линии добавляет вершины):</span>
+        <span class="muted">Точки маршрута:</span>
         <ol id="points" class="list"></ol>
       </div>
     </aside>
@@ -267,289 +264,157 @@
   </div>
 
   <script>
-    const ROUTE_META = {
-      "saarburg-trier": { title: "Saarburg -> Trier", subtitle: "~55-65 км · 2.5-3 ч", mode: "Минималистичный маршрут", center: [49.639, 6.544], zoom: 12 },
-      "trip-mehring": { title: "Петля вокруг Mehring", subtitle: "82 км · 2.5 ч", mode: "Afterwork loop", center: [49.789, 6.792], zoom: 11 },
-      "trip-vulkansee": { title: "Поездка к вулканическим озёрам", subtitle: "210 км · 1 день", mode: "Дальняя поездка", center: [50.21, 6.78], zoom: 10 },
-      "trip-mosel": { title: "Trier -> Großglockner", subtitle: "~1020 км · 7 дней", mode: "Большое путешествие", center: [49.8, 7.2], zoom: 7 }
-    };
-
-    const params = new URLSearchParams(window.location.search);
-    const routeId = params.get("route") || "saarburg-trier";
-    const routeMeta = ROUTE_META[routeId] || ROUTE_META["saarburg-trier"];
-    const storageKey = `roadandrideRoute:${routeId}`;
-
-    document.querySelector("[data-route-name]").textContent = routeMeta.title;
-    document.querySelector("[data-route-duration]").textContent = routeMeta.subtitle;
-    const modeEl = document.querySelector("[data-route-mode]");
-    if (modeEl) modeEl.textContent = routeMeta.mode || "Minimal Route";
-    document.title = `Road & Ride - Route Builder (${routeMeta.title})`;
-
-    const descField = document.getElementById("desc");
-
-    const map = L.map("map", { zoomControl: false, attributionControl: false }).setView(routeMeta.center, routeMeta.zoom);
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 16, opacity: 0.30 }).addTo(map);
+    const map = L.map('map', { zoomControl:false, attributionControl:false }).setView([49.693, 6.539], 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 16, opacity: 0.30 }).addTo(map);
 
     const drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
-    const drawOptions = {
-      color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim(),
-      weight: 4,
-      opacity: 0.95,
-      className: "route-line"
-    };
-
     const drawControl = new L.Control.Draw({
       draw: {
-        polygon: false,
-        rectangle: false,
-        circle: false,
-        marker: false,
-        circlemarker: false,
-        polyline: { shapeOptions: drawOptions }
+        polygon:false,
+        rectangle:false,
+        circle:false,
+        marker:false,
+        circlemarker:false,
+        polyline: {
+          shapeOptions: {
+            color: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+            weight: 4,
+            opacity: 0.95,
+            className:'route-line'
+          }
+        }
       },
-      edit: { featureGroup: drawnItems, remove: false }
+      edit: { featureGroup: drawnItems, remove:false }
     });
-
     map.addControl(drawControl);
 
     let currentLine = null;
 
-    map.on(L.Draw.Event.CREATED, event => {
-      if (event.layerType === "polyline") {
+    map.on(L.Draw.Event.CREATED, function (e) {
+      if (e.layerType === 'polyline') {
         if (currentLine) drawnItems.removeLayer(currentLine);
-        currentLine = event.layer;
-        currentLine.setStyle(drawOptions);
+        currentLine = e.layer;
         drawnItems.addLayer(currentLine);
         fitToLine();
         refreshPointsList();
       }
     });
 
-    map.on("draw:edited", refreshPointsList);
+    map.on('draw:edited', refreshPointsList);
 
-    function fitToLine() {
-      if (currentLine) {
-        map.fitBounds(currentLine.getBounds(), { padding: [40, 40] });
+    function fitToLine(){
+      if(currentLine){
+        map.fitBounds(currentLine.getBounds(), {padding:[40,40]});
       }
     }
 
-    function refreshPointsList() {
-      const list = document.getElementById("points");
-      list.innerHTML = "";
-      if (!currentLine) return;
-      currentLine.getLatLngs().forEach((latLng, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${String(index + 1).padStart(2, "0")} · ${latLng.lat.toFixed(5)}, ${latLng.lng.toFixed(5)}`;
+    function refreshPointsList(){
+      const list = document.getElementById('points');
+      list.innerHTML = '';
+      if(!currentLine) return;
+      currentLine.getLatLngs().forEach((ll,idx)=>{
+        const li = document.createElement('li');
+        li.textContent = `${String(idx+1).padStart(2,'0')} · ${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
         list.appendChild(li);
       });
-      toggleSaveState(false);
     }
 
-    const btnDraw = document.getElementById("btnDraw");
-    const btnEdit = document.getElementById("btnEdit");
-    const btnDelete = document.getElementById("btnDelete");
-    const btnSimplify = document.getElementById("btnSimplify");
-    const btnSnap = document.getElementById("btnSnap");
-    const btnExportGeoJSON = document.getElementById("btnExportGeoJSON");
-    const btnExportGPX = document.getElementById("btnExportGPX");
-    const btnSave = document.getElementById("btnSave");
+    const btnDraw = document.getElementById('btnDraw');
+    const btnEdit = document.getElementById('btnEdit');
+    const btnDelete = document.getElementById('btnDelete');
+    const btnSimplify = document.getElementById('btnSimplify');
+    const btnSnap = document.getElementById('btnSnap');
+    const btnExportGeoJSON = document.getElementById('btnExportGeoJSON');
+    const btnExportGPX = document.getElementById('btnExportGPX');
+    const btnPublish = document.getElementById('btnPublish');
 
     btnDraw.onclick = () => new L.Draw.Polyline(map, drawControl.options.draw.polyline).enable();
     btnEdit.onclick = () => new L.EditToolbar.Edit(map, { featureGroup: drawnItems }).enable();
     btnDelete.onclick = () => {
-      if (currentLine) {
+      if(currentLine){
         drawnItems.removeLayer(currentLine);
-        currentLine = null;
+        currentLine=null;
         refreshPointsList();
       }
     };
 
     btnSimplify.onclick = () => {
-      if (!currentLine) return;
-      const tolerance = 0.0005;
-      const simplified = L.LineUtil.simplify(
-        currentLine.getLatLngs().map(latLng => L.point(latLng.lng, latLng.lat)),
-        tolerance
-      ).map(point => L.latLng(point.y, point.x));
-      currentLine.setLatLngs(simplified);
+      if(!currentLine) return;
+      const tol = 0.0005;
+      const simp = L.LineUtil.simplify(currentLine.getLatLngs().map(ll=>L.point(ll.lng, ll.lat)), tol)
+                     .map(p=>L.latLng(p.y, p.x));
+      currentLine.setLatLngs(simp);
       refreshPointsList();
     };
 
     btnSnap.onclick = async () => {
-      if (!currentLine) return;
-      const coords = currentLine.getLatLngs().map(latLng => `${latLng.lng},${latLng.lat}`).join(";");
+      if(!currentLine) return;
+      const coords = currentLine.getLatLngs().map(ll=>`${ll.lng},${ll.lat}`).join(';');
       const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&alternatives=false`;
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data && data.routes && data.routes[0]) {
-          const geometry = data.routes[0].geometry.coordinates.map(([lng, lat]) => L.latLng(lat, lng));
-          currentLine.setLatLngs(geometry);
+      try{
+        const res = await fetch(url);
+        const data = await res.json();
+        if(data && data.routes && data.routes[0]){
+          const g = data.routes[0].geometry.coordinates.map(([lng,lat])=>L.latLng(lat,lng));
+          currentLine.setLatLngs(g);
           fitToLine();
           refreshPointsList();
         }
-      } catch (error) {
-        console.warn("OSRM request failed", error);
+      }catch(err){
+        console.warn('OSRM недоступен', err);
       }
     };
 
-    function lineToGeoJSON() {
-      if (!currentLine) return null;
+    function lineToGeoJSON(){
+      if(!currentLine) return null;
       return currentLine.toGeoJSON();
     }
 
     btnExportGeoJSON.onclick = () => {
-      const feature = lineToGeoJSON();
-      if (!feature) return;
-      const blob = new Blob([JSON.stringify(feature, null, 2)], { type: "application/json" });
-      downloadBlob(blob, "route.geojson");
+      const gj = lineToGeoJSON(); if(!gj) return;
+      const blob = new Blob([JSON.stringify(gj, null, 2)], {type:'application/json'});
+      downloadBlob(blob, 'route.geojson');
     };
 
     btnExportGPX.onclick = () => {
-      const feature = lineToGeoJSON();
-      if (!feature) return;
-      const gpx = toGPX({ type: "FeatureCollection", features: [feature] }, { creator: "Road & Ride" });
-      const blob = new Blob([gpx], { type: "application/gpx+xml" });
-      downloadBlob(blob, "route.gpx");
+      const gj = lineToGeoJSON(); if(!gj) return;
+      const gpx = toGPX({ type:'FeatureCollection', features:[gj] }, { creator:'Road&Ride' });
+      const blob = new Blob([gpx], {type:'application/gpx+xml'});
+      downloadBlob(blob, 'route.gpx');
     };
 
-    function downloadBlob(blob, filename) {
+    function downloadBlob(blob, filename){
       const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = filename;
-      anchor.click();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 2000);
     }
 
-    function buildPreviewFromLatLngs(latlngs) {
-      if (!latlngs.length) return "";
-      const width = 640;
-      const height = 360;
-      const padding = 28;
-      const innerW = width - padding * 2;
-      const innerH = height - padding * 2;
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLogout = document.getElementById('btnLogout');
+    let currentUser = null;
 
-      const lats = latlngs.map(point => point.lat);
-      const lngs = latlngs.map(point => point.lng);
-      let minLat = Math.min(...lats);
-      let maxLat = Math.max(...lats);
-      let minLng = Math.min(...lngs);
-      let maxLng = Math.max(...lngs);
+    btnLogin.onclick = () => {
+      alert('Здесь позже появится окно входа.');
+      currentUser = { email:'demo@user' };
+      syncAuthUI();
+    };
 
-      if (minLat === maxLat) {
-        minLat -= 0.0001;
-        maxLat += 0.0001;
-      }
-      if (minLng === maxLng) {
-        minLng -= 0.0001;
-        maxLng += 0.0001;
-      }
+    btnLogout.onclick = () => {
+      currentUser = null;
+      syncAuthUI();
+    };
 
-      const points = latlngs.map(({ lat, lng }) => {
-        const x = padding + ((lng - minLng) / (maxLng - minLng)) * innerW;
-        const y = padding + (1 - (lat - minLat) / (maxLat - minLat)) * innerH;
-        return { x, y };
-      });
-
-      const pathData = points
-        .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
-        .join(" ");
-
-      const start = points[0];
-      const end = points[points.length - 1];
-
-      const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <defs>
-    <linearGradient id="bg" x1="0%" x2="0%" y1="0%" y2="100%">
-      <stop offset="0%" stop-color="#f8fafc" />
-      <stop offset="100%" stop-color="#e2e8f0" />
-    </linearGradient>
-  </defs>
-  <rect width="${width}" height="${height}" fill="url(#bg)" rx="24" />
-  <path d="${pathData}" fill="none" stroke="#e47c34" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
-  <circle cx="${start.x.toFixed(2)}" cy="${start.y.toFixed(2)}" r="10" fill="#ffffff" stroke="#e47c34" stroke-width="4" />
-  <circle cx="${end.x.toFixed(2)}" cy="${end.y.toFixed(2)}" r="10" fill="#e47c34" />
-</svg>`;
-
-      return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+    function syncAuthUI(){
+      btnLogin.style.display = currentUser ? 'none' : 'inline-flex';
+      btnLogout.style.display = currentUser ? 'inline-flex' : 'none';
     }
 
-    function saveRoute() {
-      if (!currentLine) {
-        alert("Сначала нарисуйте маршрут");
-        return;
-      }
-      const geojson = lineToGeoJSON();
-      const latlngs = currentLine.getLatLngs();
-      const preview = buildPreviewFromLatLngs(latlngs);
-      const payload = {
-        routeId,
-        savedAt: new Date().toISOString(),
-        description: descField.value || "",
-        geojson,
-        preview
-      };
-      try {
-        window.localStorage.setItem(storageKey, JSON.stringify(payload));
-      } catch (error) {
-        alert("Не удалось сохранить маршрут. Проверьте настройки браузера.");
-        return;
-      }
-      toggleSaveState(true);
-      alert("Маршрут сохранён. Он появится в карточке маршрута на сайте.");
-    }
-
-    function toggleSaveState(isSaved) {
-      if (isSaved) {
-        btnSave.textContent = "Сохранено";
-        btnSave.classList.add("is-disabled");
-        setTimeout(() => {
-          btnSave.textContent = "Сохранить";
-          btnSave.classList.remove("is-disabled");
-        }, 2000);
-      } else {
-        btnSave.textContent = "Сохранить";
-        btnSave.classList.remove("is-disabled");
-      }
-    }
-
-    btnSave.onclick = saveRoute;
-
-    function loadSavedRoute() {
-      let storedRaw = null;
-      try {
-        storedRaw = window.localStorage.getItem(storageKey);
-      } catch (error) {
-        return;
-      }
-      if (!storedRaw) return;
-      let stored;
-      try {
-        stored = JSON.parse(storedRaw);
-      } catch (error) {
-        return;
-      }
-      if (!stored || !stored.geojson) return;
-      const layerCollection = L.geoJSON(stored.geojson, { style: drawOptions });
-      const layers = layerCollection.getLayers().filter(layer => layer instanceof L.Polyline);
-      if (!layers.length) return;
-      if (currentLine) drawnItems.removeLayer(currentLine);
-      currentLine = layers[0];
-      currentLine.setStyle(drawOptions);
-      drawnItems.addLayer(currentLine);
-      fitToLine();
-      refreshPointsList();
-      if (stored.description) {
-        descField.value = stored.description;
-      }
-      toggleSaveState(true);
-    }
-
-    loadSavedRoute();
+    btnPublish.onclick = () => {
+      alert('Публикация будет реализована позже. Экспортируйте GPX/GeoJSON и добавьте маршрут вручную.');
+    };
   </script>
 </body>
 </html>
