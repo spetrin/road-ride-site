@@ -441,4 +441,50 @@ if (routeMapContainers.length) {
 }
 
     
+const routePreviewBlocks = document.querySelectorAll("[data-route-preview]");
+
+if (routePreviewBlocks.length && "localStorage" in window) {
+  routePreviewBlocks.forEach(block => {
+    const storageKey = block.dataset.routePreview;
+    if (!storageKey) return;
+
+    let raw = null;
+    try {
+      raw = localStorage.getItem(storageKey);
+    } catch (error) {
+      raw = null;
+    }
+    if (!raw) return;
+
+    let payload = null;
+    try {
+      payload = JSON.parse(raw);
+    } catch (error) {
+      payload = null;
+    }
+    if (!payload || !payload.preview) return;
+
+    const img = block.querySelector("[data-route-preview-image]");
+    if (img) {
+      img.src = payload.preview;
+    }
+
+    const descEl = block.querySelector("[data-route-preview-description]");
+    if (descEl) {
+      descEl.textContent = payload.description || "";
+    }
+
+    const metaEl = block.querySelector("[data-route-preview-meta]");
+    if (metaEl) {
+      metaEl.textContent = payload.savedAt
+        ? new Intl.DateTimeFormat("ru", { dateStyle: "medium", timeStyle: "short" }).format(
+            new Date(payload.savedAt)
+          )
+        : "";
+    }
+
+    block.hidden = false;
+  });
+}
+
 

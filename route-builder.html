@@ -1,15 +1,16 @@
+
 <!doctype html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Road & Ride — Route Builder</title>
+  <title>Road & Ride – Route Builder (Minimal)</title>
   <style>
     :root {
       --bg: #ffffff;
       --fg: #0f172a;
       --muted: #94a3b8;
-      --accent: #e47c34;
+      --accent: #E47C34;
     }
 
     * {
@@ -18,7 +19,7 @@
 
     body {
       margin: 0;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
       color: var(--fg);
       background: var(--bg);
     }
@@ -29,22 +30,11 @@
       justify-content: space-between;
       padding: 12px 16px;
       border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 0;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(12px);
-      z-index: 10;
     }
 
     header .brand {
       font-weight: 700;
       letter-spacing: 0.3px;
-    }
-
-    header .actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
     }
 
     button,
@@ -56,7 +46,6 @@
       padding: 8px 12px;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 0.92rem;
     }
 
     button.primary {
@@ -65,15 +54,10 @@
       color: #ffffff;
     }
 
-    button.ghost {
-      background: transparent;
-      border-color: #e5e7eb;
-      color: #111827;
-    }
-
     #wrap {
       display: grid;
-      grid-template-columns: minmax(280px, 340px) 1fr;
+      grid-template-columns: 320px 1fr;
+      min-height: calc(100vh - 56px);
       min-height: calc(100dvh - 56px);
     }
 
@@ -87,7 +71,9 @@
     }
 
     #map {
+      height: calc(100vh - 56px);
       height: calc(100dvh - 56px);
+      min-height: 480px;
       width: 100%;
     }
 
@@ -95,16 +81,12 @@
       border: 1px solid #e5e7eb;
       border-radius: 14px;
       padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
       background: #ffffff;
     }
 
     .muted {
       color: var(--muted);
       font-size: 0.9rem;
-      line-height: 1.4;
     }
 
     .row {
@@ -114,14 +96,11 @@
     }
 
     .input,
-    textarea,
     select {
       width: 100%;
       padding: 8px 10px;
       border: 1px solid #e5e7eb;
       border-radius: 10px;
-      font: inherit;
-      resize: vertical;
     }
 
     .list {
@@ -137,7 +116,7 @@
       border: 1px dashed #e5e7eb;
       border-radius: 999px;
       padding: 4px 8px;
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--muted);
     }
 
@@ -156,12 +135,12 @@
     }
 
     .hint {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--muted);
     }
 
     .leaflet-container {
-      filter: grayscale(100%) contrast(1.1) brightness(1.15);
+      filter: grayscale(60%) contrast(1.2) brightness(1.05) saturate(1.1);
     }
 
     .leaflet-control-zoom,
@@ -174,52 +153,55 @@
       stroke-width: 3px !important;
     }
 
-    #points {
-      margin: 8px 0 0 18px;
-      padding-left: 0;
+    .save-preview {
+      margin: 16px;
+      display: none;
     }
 
-    #points li {
+    .save-preview.is-visible {
+      display: block;
+    }
+
+    .save-preview__title {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .save-preview__meta {
+      margin: 0 0 8px;
       font-size: 0.85rem;
-      color: #1f2937;
+      color: var(--muted);
     }
 
-    @media (max-width: 960px) {
-      #wrap {
-        grid-template-columns: 1fr;
-      }
+    .save-preview__image {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 16px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.15);
+      display: block;
+    }
 
-      #sidebar {
-        border-right: none;
-        border-bottom: 1px solid #e5e7eb;
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-
-      #sidebar .card {
-        flex: 1 1 280px;
-      }
-
-      #map {
-        height: 60vh;
-      }
+    .save-preview__text {
+      margin: 12px 0 0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--fg);
+      white-space: pre-line;
     }
   </style>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha512-o9N1jH+3r0pJIUKGwEuITTwSb9VjA36TObgGJE0E7E5Wdl66iRS0LlwM651c01qmPvvrL1jAUx0xGfLlr3rGQw==" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha512-Wyn36GZ8V+8mQpAO6QW2LaxhUJW6QcgO5Kb/6VQwWi4KFOeFHrgb3R04QLbTjaCj1eO0MJ0GJtG8skhNf38B0w==" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
   <script src="https://unpkg.com/@tmcw/togpx@0.5.5/togpx.js"></script>
 </head>
 <body>
   <header>
-    <div class="brand">Road & Ride — Route Builder</div>
-    <div class="actions">
-      <button class="ghost" id="btnLogin">Войти</button>
-      <button class="ghost" id="btnLogout" style="display:none">Выйти</button>
-      <button class="primary" id="btnPublish" title="Скоро">Опубликовать</button>
-    </div>
+    <div class="brand">Road & Ride – Route Builder</div>
+    <button class="primary" id="btnSave">Сохранить</button>
   </header>
   <div id="wrap">
     <aside id="sidebar">
@@ -228,72 +210,80 @@
           <h3 style="margin:0;font-size:1.05rem">Saarburg → Trier</h3>
           <span class="pill">Minimal</span>
         </div>
-        <div class="muted">~55–65 км · 2.5–3 ч</div>
+        <div class="muted" style="margin-top:4px">~55–65 km · 1–1.5 h</div>
         <div class="hr"></div>
-        <label class="hint" for="desc">Описание:</label>
-        <textarea id="desc" class="input" rows="5" placeholder="Ключевые точки: Saarburg → Nittel → Konz → Oberemmel → Trier"></textarea>
+        <div class="list">
+          <label class="hint">Beschreibung (für Tooltips):</label>
+          <textarea id="desc" class="input" rows="4" placeholder="Kurz die Abschnitte beschreiben: Saarburg → Nittel → Konz → Oberemmel → Trier"></textarea>
+        </div>
       </div>
 
       <div class="card">
         <div class="row">
-          <button id="btnDraw" class="btn">✏ Нарисовать</button>
-          <button id="btnEdit" class="btn">✂ Править</button>
-          <button id="btnDelete" class="btn">🗑 Очистить</button>
+          <button id="btnDraw" class="btn">✏️ Zeichnen</button>
+          <button id="btnEdit" class="btn">✂️ Bearbeiten</button>
+          <button id="btnDelete" class="btn">🗑 Löschen</button>
         </div>
         <div class="hr"></div>
         <div class="row">
-          <button id="btnSnap" class="btn">🧲 Привязать к дороге</button>
-          <button id="btnSimplify" class="btn">🪄 Упростить</button>
+          <button id="btnSnap" class="btn">🧲 Auf Straße legen (OSRM)</button>
+          <button id="btnSimplify" class="btn">🪄 Vereinfachen</button>
         </div>
         <div class="hr"></div>
         <div class="row">
-          <button id="btnExportGeoJSON" class="btn">⬇ GeoJSON</button>
-          <button id="btnExportGPX" class="btn">⬇ GPX</button>
+          <button id="btnExportGeoJSON" class="btn">⬇️ GeoJSON</button>
+          <button id="btnExportGPX" class="btn">⬇️ GPX</button>
         </div>
-        <p class="hint">Snap использует публичный OSRM (демо). Привязка может быть недоступна из-за лимитов.</p>
+        <p class="hint">MVP: manuell zeichnen + exportieren. Das Snapping nutzt die öffentliche OSRM-Demo und kann limitiert sein.</p>
       </div>
 
       <div class="card">
-        <span class="muted">Точки маршрута:</span>
-        <ol id="points" class="list"></ol>
+        <div class="muted">Punkte des Tracks (nach dem Zeichnen anklicken):</div>
+        <ol id="points" class="list" style="margin:8px 0 0 18px"></ol>
       </div>
     </aside>
     <main>
       <div id="map"></div>
+      <section class="card save-preview" id="savedPreview">
+        <h3 class="save-preview__title">Сохранённый маршрут</h3>
+        <p class="save-preview__meta" id="savedMeta"></p>
+        <img class="save-preview__image" id="savedImage" alt="Сохранённый маршрут">
+        <p class="save-preview__text" id="savedDescription"></p>
+      </section>
     </main>
   </div>
 
   <script>
-    const map = L.map('map', { zoomControl:false, attributionControl:false }).setView([49.693, 6.539], 12);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 16, opacity: 0.30 }).addTo(map);
+    const map = L.map("map", { zoomControl: false, attributionControl: false }).setView([49.693, 6.539], 12);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 16, opacity: 0.55 }).addTo(map);
 
     const drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
     const drawControl = new L.Control.Draw({
       draw: {
-        polygon:false,
-        rectangle:false,
-        circle:false,
-        marker:false,
-        circlemarker:false,
+        polygon: false,
+        rectangle: false,
+        circle: false,
+        marker: false,
+        circlemarker: false,
         polyline: {
           shapeOptions: {
-            color: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+            color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim(),
             weight: 4,
             opacity: 0.95,
-            className:'route-line'
+            className: "route-line"
           }
         }
       },
-      edit: { featureGroup: drawnItems, remove:false }
+      edit: { featureGroup: drawnItems, remove: false }
     });
     map.addControl(drawControl);
 
     let currentLine = null;
 
     map.on(L.Draw.Event.CREATED, function (e) {
-      if (e.layerType === 'polyline') {
+      if (e.layerType === "polyline") {
         if (currentLine) drawnItems.removeLayer(currentLine);
         currentLine = e.layer;
         drawnItems.addLayer(currentLine);
@@ -302,119 +292,241 @@
       }
     });
 
-    map.on('draw:edited', refreshPointsList);
+    map.on("draw:edited", refreshPointsList);
 
-    function fitToLine(){
-      if(currentLine){
-        map.fitBounds(currentLine.getBounds(), {padding:[40,40]});
+    function fitToLine() {
+      if (currentLine) {
+        map.fitBounds(currentLine.getBounds(), { padding: [40, 40] });
       }
     }
 
-    function refreshPointsList(){
-      const list = document.getElementById('points');
-      list.innerHTML = '';
-      if(!currentLine) return;
-      currentLine.getLatLngs().forEach((ll,idx)=>{
-        const li = document.createElement('li');
-        li.textContent = `${String(idx+1).padStart(2,'0')} · ${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
+    function refreshPointsList() {
+      const list = document.getElementById("points");
+      list.innerHTML = "";
+      if (!currentLine) return;
+      currentLine.getLatLngs().forEach((ll, idx) => {
+        const li = document.createElement("li");
+        li.textContent = `${String(idx + 1).padStart(2, "0")} · ${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
         list.appendChild(li);
       });
     }
 
-    const btnDraw = document.getElementById('btnDraw');
-    const btnEdit = document.getElementById('btnEdit');
-    const btnDelete = document.getElementById('btnDelete');
-    const btnSimplify = document.getElementById('btnSimplify');
-    const btnSnap = document.getElementById('btnSnap');
-    const btnExportGeoJSON = document.getElementById('btnExportGeoJSON');
-    const btnExportGPX = document.getElementById('btnExportGPX');
-    const btnPublish = document.getElementById('btnPublish');
+    const btnDraw = document.getElementById("btnDraw");
+    const btnEdit = document.getElementById("btnEdit");
+    const btnDelete = document.getElementById("btnDelete");
+    const btnSimplify = document.getElementById("btnSimplify");
+    const btnSnap = document.getElementById("btnSnap");
+    const btnExportGeoJSON = document.getElementById("btnExportGeoJSON");
+    const btnExportGPX = document.getElementById("btnExportGPX");
+    const btnSave = document.getElementById("btnSave");
+
+    const savedPreview = document.getElementById("savedPreview");
+    const savedMeta = document.getElementById("savedMeta");
+    const savedImage = document.getElementById("savedImage");
+    const savedDescription = document.getElementById("savedDescription");
+
+    const STORAGE_KEY = "routeBuilder:saarburg-trier";
 
     btnDraw.onclick = () => new L.Draw.Polyline(map, drawControl.options.draw.polyline).enable();
     btnEdit.onclick = () => new L.EditToolbar.Edit(map, { featureGroup: drawnItems }).enable();
     btnDelete.onclick = () => {
-      if(currentLine){
+      if (currentLine) {
         drawnItems.removeLayer(currentLine);
-        currentLine=null;
+        currentLine = null;
         refreshPointsList();
       }
     };
 
     btnSimplify.onclick = () => {
-      if(!currentLine) return;
+      if (!currentLine) return;
       const tol = 0.0005;
-      const simp = L.LineUtil.simplify(currentLine.getLatLngs().map(ll=>L.point(ll.lng, ll.lat)), tol)
-                     .map(p=>L.latLng(p.y, p.x));
+      const simp = L.LineUtil.simplify(currentLine.getLatLngs().map(ll => L.point(ll.lng, ll.lat)), tol).map(p =>
+        L.latLng(p.y, p.x)
+      );
       currentLine.setLatLngs(simp);
       refreshPointsList();
     };
 
     btnSnap.onclick = async () => {
-      if(!currentLine) return;
-      const coords = currentLine.getLatLngs().map(ll=>`${ll.lng},${ll.lat}`).join(';');
-      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&alternatives=false`;
-      try{
+      if (!currentLine) return;
+      const coords = currentLine.getLatLngs()
+        .map(ll => `${ll.lng},${ll.lat}`)
+        .join(";");
+      try {
+        const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&alternatives=false`;
         const res = await fetch(url);
         const data = await res.json();
-        if(data && data.routes && data.routes[0]){
-          const g = data.routes[0].geometry.coordinates.map(([lng,lat])=>L.latLng(lat,lng));
+        if (data && data.routes && data.routes[0]) {
+          const g = data.routes[0].geometry.coordinates.map(([lng, lat]) => L.latLng(lat, lng));
           currentLine.setLatLngs(g);
           fitToLine();
           refreshPointsList();
         }
-      }catch(err){
-        console.warn('OSRM недоступен', err);
+      } catch (e) {
+        console.warn("OSRM failed", e);
       }
     };
 
-    function lineToGeoJSON(){
-      if(!currentLine) return null;
+    function lineToGeoJSON() {
+      if (!currentLine) return null;
       return currentLine.toGeoJSON();
     }
 
     btnExportGeoJSON.onclick = () => {
-      const gj = lineToGeoJSON(); if(!gj) return;
-      const blob = new Blob([JSON.stringify(gj, null, 2)], {type:'application/json'});
-      downloadBlob(blob, 'route.geojson');
+      const gj = lineToGeoJSON();
+      if (!gj) return;
+      const blob = new Blob([JSON.stringify(gj, null, 2)], { type: "application/json" });
+      downloadBlob(blob, "route.geojson");
     };
 
     btnExportGPX.onclick = () => {
-      const gj = lineToGeoJSON(); if(!gj) return;
-      const gpx = toGPX({ type:'FeatureCollection', features:[gj] }, { creator:'Road&Ride' });
-      const blob = new Blob([gpx], {type:'application/gpx+xml'});
-      downloadBlob(blob, 'route.gpx');
+      const gj = lineToGeoJSON();
+      if (!gj) return;
+      const gpx = toGPX({ type: "FeatureCollection", features: [gj] }, { creator: "Road&Ride" });
+      const blob = new Blob([gpx], { type: "application/gpx+xml" });
+      downloadBlob(blob, "route.gpx");
     };
 
-    function downloadBlob(blob, filename){
+    function downloadBlob(blob, filename) {
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = filename; a.click();
-      setTimeout(()=>URL.revokeObjectURL(url), 2000);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
     }
 
-    const btnLogin = document.getElementById('btnLogin');
-    const btnLogout = document.getElementById('btnLogout');
-    let currentUser = null;
+    function buildPreviewImage(latlngs) {
+      if (!latlngs.length) return "";
+      const width = 640;
+      const height = 360;
+      const padding = 28;
+      const innerWidth = width - padding * 2;
+      const innerHeight = height - padding * 2;
 
-    btnLogin.onclick = () => {
-      alert('Здесь позже появится окно входа.');
-      currentUser = { email:'demo@user' };
-      syncAuthUI();
-    };
+      const lats = latlngs.map(p => p.lat);
+      const lngs = latlngs.map(p => p.lng);
+      let minLat = Math.min(...lats);
+      let maxLat = Math.max(...lats);
+      let minLng = Math.min(...lngs);
+      let maxLng = Math.max(...lngs);
 
-    btnLogout.onclick = () => {
-      currentUser = null;
-      syncAuthUI();
-    };
+      if (minLat === maxLat) {
+        minLat -= 0.0001;
+        maxLat += 0.0001;
+      }
+      if (minLng === maxLng) {
+        minLng -= 0.0001;
+        maxLng += 0.0001;
+      }
 
-    function syncAuthUI(){
-      btnLogin.style.display = currentUser ? 'none' : 'inline-flex';
-      btnLogout.style.display = currentUser ? 'inline-flex' : 'none';
+      const points = latlngs.map(({ lat, lng }) => {
+        const x = padding + ((lng - minLng) / (maxLng - minLng)) * innerWidth;
+        const y = padding + (1 - (lat - minLat) / (maxLat - minLat)) * innerHeight;
+        return { x, y };
+      });
+
+      const pathData = points
+        .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`)
+        .join(" ");
+
+      const start = points[0];
+      const end = points[points.length - 1];
+
+      const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+  </defs>
+  <rect width="${width}" height="${height}" fill="url(#bg)" rx="24" />
+  <path d="${pathData}" fill="none" stroke="#E47C34" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="${start.x.toFixed(2)}" cy="${start.y.toFixed(2)}" r="11" fill="#ffffff" stroke="#E47C34" stroke-width="4" />
+  <circle cx="${end.x.toFixed(2)}" cy="${end.y.toFixed(2)}" r="11" fill="#E47C34" stroke="#ffffff" stroke-width="4" />
+</svg>`;
+
+      return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
     }
 
-    btnPublish.onclick = () => {
-      alert('Публикация будет реализована позже. Экспортируйте GPX/GeoJSON и добавьте маршрут вручную.');
+    function renderSaved(payload) {
+      if (!payload || !payload.preview) {
+        savedPreview.classList.remove("is-visible");
+        return;
+      }
+      savedImage.src = payload.preview;
+      savedDescription.textContent = payload.description || "";
+      savedMeta.textContent = payload.savedAt
+        ? `Сохранено: ${new Intl.DateTimeFormat("ru", { dateStyle: "medium", timeStyle: "short" }).format(
+            new Date(payload.savedAt)
+          )}`
+        : "";
+      savedPreview.classList.add("is-visible");
+    }
+
+    btnSave.onclick = () => {
+      if (!currentLine) {
+        alert("Сначала нарисуйте маршрут.");
+        return;
+      }
+      const latlngs = currentLine.getLatLngs();
+      const payload = {
+        geojson: currentLine.toGeoJSON(),
+        description: document.getElementById("desc").value || "",
+        preview: buildPreviewImage(latlngs),
+        savedAt: new Date().toISOString()
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        renderSaved(payload);
+        alert("Маршрут сохранён.");
+      } catch (error) {
+        alert("Не удалось сохранить маршрут: " + error.message);
+      }
     };
+
+    function loadSaved() {
+      let raw = null;
+      try {
+        raw = localStorage.getItem(STORAGE_KEY);
+      } catch (error) {
+        return;
+      }
+      if (!raw) {
+        savedPreview.classList.remove("is-visible");
+        return;
+      }
+      let payload;
+      try {
+        payload = JSON.parse(raw);
+      } catch (error) {
+        return;
+      }
+      if (!payload || !payload.geojson) {
+        renderSaved(null);
+        return;
+      }
+      const layer = L.geoJSON(payload.geojson, {
+        style: {
+          color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim(),
+          weight: 4
+        }
+      }).getLayers()[0];
+      if (layer) {
+        if (currentLine) drawnItems.removeLayer(currentLine);
+        currentLine = layer;
+        drawnItems.addLayer(currentLine);
+        fitToLine();
+        refreshPointsList();
+        if (payload.description) {
+          document.getElementById("desc").value = payload.description;
+        }
+      }
+      renderSaved(payload);
+    }
+
+    loadSaved();
   </script>
 </body>
 </html>
